@@ -1,6 +1,6 @@
 # 哔哩番剧
 
-哔哩番剧已迁移至Kotlin，Java实现项目地址：[BiliBangumiDownloader_Java](https://github.com/SGPublic/BiliBangumiDownloader_Java)
+哔哩番剧正在迁移至Kotlin，Java实现项目地址：[BiliBangumiDownloader_Java](https://github.com/SGPublic/BiliBangumiDownloader_Java)
 
 ## 申明
 
