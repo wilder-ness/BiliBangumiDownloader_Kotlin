@@ -23,6 +23,46 @@ import java.util.*
 
 class UpdateModule(private val context: Context) {
     private lateinit var callbackPrivate: Callback
+
+    companion object {
+        fun listener(context: Context, Id: Long) {
+            val intentFilter = IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
+            val broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+                override fun onReceive(context: Context, intent: Intent) {
+                    val manager: DownloadManager =
+                            context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+                    val ID: Long = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+                    if (ID == Id) {
+                        val query: DownloadManager.Query = DownloadManager.Query()
+                        query.setFilterById(Id)
+                        val cursor: Cursor = manager.query(query)
+                        if (cursor.moveToFirst()) {
+                            val fileName =
+                                    cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI))
+                            fileName?.let { openAPK(context, it) }
+                        }
+                        cursor.close()
+                    }
+                }
+            }
+            context.applicationContext.registerReceiver(broadcastReceiver, intentFilter)
+        }
+
+        private fun openAPK(context: Context, fileSavePath: String) {
+            val file = File(Uri.parse(fileSavePath).path.toString())
+            val filePath = file.absolutePath
+            val intent = Intent(Intent.ACTION_VIEW)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK and Intent.FLAG_GRANT_READ_URI_PERMISSION
+            val data: Uri = FileProvider.getUriForFile(
+                    context.applicationContext,
+                    "com.sgpublic.bilidownload.fileprovider",
+                    File(filePath)
+            )
+            intent.setDataAndType(data, "application/vnd.android.package-archive")
+            context.startActivity(intent)
+        }
+    }
+
     fun getUpdate(type: Int, callback: Callback) {
         val helper = BaseAPI()
         this.callbackPrivate = callback
@@ -94,43 +134,6 @@ class UpdateModule(private val context: Context) {
                 }
             }
         })
-    }
-
-    fun listener(Id: Long) {
-        val intentFilter = IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
-        val broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
-            override fun onReceive(context: Context, intent: Intent) {
-                val manager: DownloadManager =
-                    context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-                val ID: Long = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
-                if (ID == Id) {
-                    val query: DownloadManager.Query = DownloadManager.Query()
-                    query.setFilterById(Id)
-                    val cursor: Cursor = manager.query(query)
-                    if (cursor.moveToFirst()) {
-                        val fileName =
-                            cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI))
-                        fileName?.let { openAPK(it) }
-                    }
-                    cursor.close()
-                }
-            }
-        }
-        context.applicationContext.registerReceiver(broadcastReceiver, intentFilter)
-    }
-
-    private fun openAPK(fileSavePath: String) {
-        val file = File(Uri.parse(fileSavePath).path.toString())
-        val filePath = file.absolutePath
-        val intent = Intent(Intent.ACTION_VIEW)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK and Intent.FLAG_GRANT_READ_URI_PERMISSION
-        val data: Uri = FileProvider.getUriForFile(
-            context.applicationContext,
-            "com.sgpublic.bilidownload.fileprovider",
-            File(filePath)
-        )
-        intent.setDataAndType(data, "application/vnd.android.package-archive")
-        context.startActivity(intent)
     }
 
     interface Callback {

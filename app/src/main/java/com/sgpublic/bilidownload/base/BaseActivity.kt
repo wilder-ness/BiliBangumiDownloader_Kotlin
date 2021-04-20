@@ -46,7 +46,7 @@ abstract class BaseActivity<T: ViewBinding>: SwipeBackActivity() {
 
     protected abstract fun getContentView(): T
 
-    protected abstract fun onSetSwipeBackEnable(): Boolean
+    protected open fun onSetSwipeBackEnable(): Boolean = false
 
     protected open fun initViewAtTop(view: View){
         var statusbarheight = 0

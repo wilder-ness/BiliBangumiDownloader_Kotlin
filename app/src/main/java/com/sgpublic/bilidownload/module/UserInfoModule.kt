@@ -70,6 +70,6 @@ class UserInfoModule(private val context: Context, accessKey: String, mid: Long)
 
     interface Callback {
         fun onFailure(code: Int, message: String?, e: Throwable?)
-        fun onResult(data: UserData?)
+        fun onResult(data: UserData)
     }
 }

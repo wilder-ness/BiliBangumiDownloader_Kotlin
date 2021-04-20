@@ -10,6 +10,4 @@ class Main: BaseActivity<ActivityMainBinding>() {
     }
 
     override fun getContentView(): ActivityMainBinding = ActivityMainBinding.inflate(layoutInflater)
-
-    override fun onSetSwipeBackEnable(): Boolean = false
 }
