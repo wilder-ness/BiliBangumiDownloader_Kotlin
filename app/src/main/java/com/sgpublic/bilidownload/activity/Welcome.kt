@@ -3,7 +3,6 @@ package com.sgpublic.bilidownload.activity
 import android.Manifest
 import android.app.AlertDialog
 import android.app.DownloadManager
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -14,9 +13,11 @@ import androidx.core.content.ContextCompat
 import com.sgpublic.bilidownload.R
 import com.sgpublic.bilidownload.base.BaseActivity
 import com.sgpublic.bilidownload.base.CrashHandler
+import com.sgpublic.bilidownload.data.TokenData
 import com.sgpublic.bilidownload.data.UserData
 import com.sgpublic.bilidownload.databinding.ActivityWelcomeBinding
 import com.sgpublic.bilidownload.manager.ConfigManager
+import com.sgpublic.bilidownload.module.LoginModule
 import com.sgpublic.bilidownload.module.UpdateModule
 import com.sgpublic.bilidownload.module.UserInfoModule
 import com.sgpublic.bilidownload.util.ActivityCollector
@@ -29,42 +30,78 @@ class Welcome: BaseActivity<ActivityWelcomeBinding>(), UpdateModule.Callback {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         Timer().schedule(object : TimerTask() {
             override fun run() {
-                val manager = ConfigManager(this@Welcome)
-                if (manager.getInt("quality", -1) == -1) {
-                    manager.putInt("quality", 80)
+                if (ConfigManager.getInt("quality", -1) == -1) {
+                    ConfigManager.putInt("quality", 80)
                 }
                 ConfigManager.checkClient(this@Welcome)
 
-                manager.apply()
+                if (!ConfigManager.getBoolean("is_login")) {
+                    Timer().schedule(object : TimerTask() {
+                        override fun run() {
+                            onSetupFinished(false)
+                        }
+                    }, 800)
+                } else if (ConfigManager.getLong("expires_in", 0L) > System.currentTimeMillis()) {
+                    refreshUserInfo()
+                } else {
+                    val refreshKey: String = ConfigManager.getString("refresh_key")
+                    val expired = object : TimerTask() {
+                        override fun run() {
+                            onToast(R.string.error_login_refresh);
+                            onSetupFinished(false);
+                        }
+                    }
+                    if (refreshKey == "") {
+                        Timer().schedule(expired, 100)
+                        return
+                    }
+                    val accessToken = ConfigManager.getString("access_token")
+                    val helper = LoginModule(this@Welcome)
+                    helper.refreshToken(accessToken, refreshKey, object : LoginModule.Callback {
+                        override fun onFailure(code: Int, message: String?, e: Throwable?) {
+                            Timer().schedule(expired, 200)
+                        }
+
+                        override fun onLimited() {
+                            Timer().schedule(expired, 200)
+                        }
+
+                        override fun onResult(token: TokenData, mid: Long) {
+                            ConfigManager.putString("access_key", token.access_token)
+                            ConfigManager.putString("refresh_key", token.refresh_token)
+                            ConfigManager.putLong("mid", mid)
+                            ConfigManager.putLong("expires_in", token.expires_in)
+                            refreshUserInfo()
+                        }
+                    })
+                }
             }
         }, 300)
     }
 
     private fun refreshUserInfo(){
-        val manager = ConfigManager(this@Welcome)
         val userInfoModule = UserInfoModule(
                 this@Welcome,
-                manager.getString("access_key", ""),
-                manager.getLong("mid", 0L)
+                ConfigManager.getString("access_key", ""),
+                ConfigManager.getLong("mid", 0L)
         )
         userInfoModule.getInfo(object : UserInfoModule.Callback {
             override fun onFailure(code: Int, message: String?, e: Throwable?) {
                 onToast(R.string.error_login)
                 onSetupFinished(false)
-                CrashHandler.saveExplosion(this@Welcome, e, code)
+                CrashHandler.saveExplosion(e, code)
             }
 
             override fun onResult(data: UserData) {
-                manager.putString("name", data.name)
-                manager.putString("sign", data.sign)
-                manager.putString("face", data.face)
-                manager.putInt("sex", data.sex)
-                manager.putString("vip_label", data.vip_label)
-                manager.putInt("vip_type", data.vip_type)
-                manager.putInt("vip_state", data.vip_state)
-                manager.putInt("level", data.level)
-                manager.putBoolean("is_login", true)
-                manager.apply()
+                ConfigManager.putString("name", data.name)
+                ConfigManager.putString("sign", data.sign)
+                ConfigManager.putString("face", data.face)
+                ConfigManager.putInt("sex", data.sex)
+                ConfigManager.putString("vip_label", data.vip_label)
+                ConfigManager.putInt("vip_type", data.vip_type)
+                ConfigManager.putInt("vip_state", data.vip_state)
+                ConfigManager.putInt("level", data.level)
+                ConfigManager.putBoolean("is_login", true)
                 onSetupFinished(true)
             }
         })
@@ -95,7 +132,7 @@ class Welcome: BaseActivity<ActivityWelcomeBinding>(), UpdateModule.Callback {
     }
 
     override fun onFailure(code: Int, message: String?, e: Throwable) {
-        CrashHandler.saveExplosion(this@Welcome, e, code)
+        CrashHandler.saveExplosion(e, code)
         runOnUiThread { this@Welcome.startActivity(activityIntent) }
     }
 

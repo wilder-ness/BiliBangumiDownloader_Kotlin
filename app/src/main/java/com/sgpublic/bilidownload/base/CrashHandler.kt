@@ -1,7 +1,8 @@
 package com.sgpublic.bilidownload.base
 
 import android.app.Application
-import android.content.Context
+import com.kongzue.dialogx.impl.ActivityLifecycleImpl
+import com.sgpublic.bilidownload.manager.ConfigManager
 import com.sgpublic.bilidownload.util.ActivityCollector
 import org.json.JSONArray
 import org.json.JSONObject
@@ -9,31 +10,32 @@ import java.io.*
 
 class CrashHandler private constructor() : Thread.UncaughtExceptionHandler {
     private var mDefaultHandler: Thread.UncaughtExceptionHandler? = null
-    private lateinit var context: Application
 
     companion object {
-        private val instance = CrashHandler()
+        private var logPath: String? = null
+        private var instance: CrashHandler = CrashHandler()
 
         fun init(context: Application) {
-            instance.context = context
-            if (instance.mDefaultHandler == null) {
-                instance.mDefaultHandler = Thread.getDefaultUncaughtExceptionHandler()
-                Thread.setDefaultUncaughtExceptionHandler(instance)
+            ActivityLifecycleImpl.init(context) {
+                logPath = it.applicationContext.getExternalFilesDir("log")?.path
+                if (instance.mDefaultHandler == null) {
+                    instance.mDefaultHandler = Thread.getDefaultUncaughtExceptionHandler()
+                    Thread.setDefaultUncaughtExceptionHandler(instance)
+                }
             }
         }
 
-        fun saveExplosion(context: Context, e: Throwable?, code: Int) {
+        fun saveExplosion(e: Throwable?, code: Int) {
+            if (this.logPath == null) {
+                return
+            }
             try {
                 if (e == null) {
                     return
                 }
-
                 val exceptionLog: JSONObject
                 var exceptionLogContent = JSONArray()
-                val exception = File(
-                        context.applicationContext.getExternalFilesDir("log")?.path,
-                        "exception.json"
-                )
+                val exception = File(logPath, "exception.json")
                 var logContent: String
                 try {
                     val fileInputStream = FileInputStream(exception)
@@ -69,9 +71,7 @@ class CrashHandler private constructor() : Thread.UncaughtExceptionHandler {
                 for (config_index in 0..2) {
                     configString.append("\nat ").append(elements[config_index].toString())
                 }
-                val editor = context.getSharedPreferences("user", Context.MODE_PRIVATE).edit()
-                editor.putString("last_exception", configString.toString())
-                editor.apply()
+                ConfigManager.putString("last_exception", configString.toString())
                 crashMsgArrayIndex.put("code", code)
                 crashMsgArrayIndex.put("message", e.toString())
                 crashMsgArrayIndex.put("stack_trace", crashStackTrace)
@@ -104,7 +104,7 @@ class CrashHandler private constructor() : Thread.UncaughtExceptionHandler {
         if (e == null) {
             return false
         }
-        saveExplosion(context, e, -100)
+        saveExplosion(e, -100)
         return true
     }
 }

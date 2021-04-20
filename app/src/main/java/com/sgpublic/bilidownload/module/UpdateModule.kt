@@ -91,15 +91,12 @@ class UpdateModule(private val context: Context) {
                     if (disable == 0L) {
                         val verCode: Long = updateTable.getInt("ver_code").toLong()
                         if (verCode > verCodeNow) {
-                            val urlDl = ("https://sgpublic.xyz/bilidl/update/apk/app-"
-                                    + version + ".apk")
+                            val urlDl = ("https://sgpublic.xyz/bilidl/update/apk/app-$version.apk")
                             val verName: String = updateTable.getString("ver_name")
                             val sizeString: String = DownloadTaskManager.getSizeString(urlDl)
                             if (version == "debug") {
-                                val manager = ConfigManager(context)
-                                if (manager.getString("beta", "") != verName) {
-                                    manager.putString("beta", verName)
-                                            .apply()
+                                if (ConfigManager.getString("beta", "") != verName) {
+                                    ConfigManager.putString("beta", verName)
                                     callbackPrivate.onUpdate(
                                         0, verName, sizeString,
                                         updateTable.getString("changelog"), urlDl

@@ -16,10 +16,10 @@ class InfoData {
     var badge = ""
     var badge_color = 0
     var badge_color_night = 0
-    override fun equals(o: Any?): Boolean {
-        if (this === o) return true
-        if (o == null || javaClass != o.javaClass) return false
-        val infoData = o as InfoData
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || javaClass != other.javaClass) return false
+        val infoData = other as InfoData
         return ep_id == infoData.ep_id
     }
 

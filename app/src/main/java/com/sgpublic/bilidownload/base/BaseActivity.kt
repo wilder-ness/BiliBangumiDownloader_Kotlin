@@ -28,7 +28,6 @@ abstract class BaseActivity<T: ViewBinding>: SwipeBackActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        PushAgent.getInstance(this).onAppStart()
 
         ActivityCollector.addActivity(this)
 
@@ -100,17 +99,11 @@ abstract class BaseActivity<T: ViewBinding>: SwipeBackActivity() {
 
     override fun onResume() {
         super.onResume()
-//        MobclickAgent.onResume(this)
         val fragments = supportFragmentManager.fragments
         for (fragment in fragments) {
             fragment?.onResume()
         }
     }
-//
-//    override fun onPause() {
-//        super.onPause()
-//        MobclickAgent.onPause(this)
-//    }
 
     override fun onDestroy() {
         super.onDestroy()
@@ -166,80 +159,5 @@ abstract class BaseActivity<T: ViewBinding>: SwipeBackActivity() {
     protected fun dip2px(dpValue: Float): Int {
         val scales = resources.displayMetrics.density
         return (dpValue * scales + 0.5f).toInt()
-    }
-
-    protected open fun saveExplosion(e: Throwable?, code: Int) {
-        try {
-            e?.let {
-                val exceptionLog: JSONObject
-                var exceptionLogContent = JSONArray()
-                val exception = File(
-                    applicationContext.getExternalFilesDir("log")?.path,
-                    "exception.json"
-                )
-                var log_content: String
-                try {
-                    val fileInputStream =
-                        FileInputStream(exception)
-                    val bufferedReader =
-                        BufferedReader(InputStreamReader(fileInputStream))
-                    var line: String?
-                    val stringBuilder = StringBuilder()
-                    while (bufferedReader.readLine().also { line = it } != null) {
-                        stringBuilder.append(line)
-                    }
-                    log_content = stringBuilder.toString()
-                } catch (e1: IOException) {
-                    log_content = ""
-                }
-                if (log_content != "") {
-                    exceptionLog = JSONObject(log_content)
-                    if (!exceptionLog.isNull("logs")) {
-                        exceptionLogContent = exceptionLog.getJSONArray("logs")
-                    }
-                }
-                val elements = e.stackTrace
-                var elementIndex: StackTraceElement
-                val crashMsgJson = JSONObject()
-                val crashMsgArray = JSONArray()
-                val crashMsgArrayIndex = JSONObject()
-                val crashStackTrace = JSONArray()
-                var crashMsgIndex = 0
-                while (crashMsgIndex < elements.size && crashMsgIndex < 10) {
-                    elementIndex = e.stackTrace[crashMsgIndex]
-                    val crashStackTraceIndex = JSONObject()
-                    crashStackTraceIndex.put("class", elementIndex.className)
-                    crashStackTraceIndex.put("line", elementIndex.lineNumber)
-                    crashStackTraceIndex.put("method", elementIndex.methodName)
-                    crashStackTrace.put(crashStackTraceIndex)
-                    crashMsgIndex++
-                }
-                val configString = StringBuilder(e.toString())
-                for (config_index in 0..2) {
-                    elementIndex = elements[config_index]
-                    configString.append("\nat ").append(elementIndex.toString())
-                }
-                ConfigManager(this).putString("last_exception", configString.toString())
-                crashMsgArrayIndex.put("code", code)
-                crashMsgArrayIndex.put("message", e.toString())
-                crashMsgArrayIndex.put("stack_trace", crashStackTrace)
-                crashMsgArray.put(crashMsgArrayIndex)
-                var exceptionLogIndex = 0
-                while (exceptionLogIndex < exceptionLogContent.length() && exceptionLogIndex < 2) {
-                    val msg_index =
-                        exceptionLogContent.getJSONObject(exceptionLogIndex)
-                    if (crashMsgArrayIndex.toString() != msg_index.toString()) {
-                        crashMsgArray.put(msg_index)
-                    }
-                    exceptionLogIndex++
-                }
-                crashMsgJson.put("logs", crashMsgArray)
-                val fileOutputStream = FileOutputStream(exception)
-                fileOutputStream.write(crashMsgJson.toString().toByteArray())
-                fileOutputStream.close()
-            }
-        } catch (ignore: JSONException) {
-        } catch (ignore: IOException) {
-        } catch (ignore: IllegalArgumentException) {}
     }
 }

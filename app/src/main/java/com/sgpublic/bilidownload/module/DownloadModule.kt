@@ -18,7 +18,7 @@ class DownloadModule(private val context: Context) {
     private val downloadData: DownloadData = DownloadData()
 
     init {
-        val accessToken = ConfigManager(context).getString("access_token")
+        val accessToken = ConfigManager.getString("access_token")
         helper = BaseAPI(accessToken)
     }
 

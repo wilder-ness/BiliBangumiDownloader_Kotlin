@@ -84,7 +84,7 @@ class SearchModule(private val context: Context) {
                                     val valueStringSub = valueString.indexOf(keywordIndex)
                                     if (valueStringSub >= 0) {
                                         valueSpannable.setSpan(
-                                            ForegroundColorSpan(context.resources.getColor(R.color.colorPrimary)),
+                                            ForegroundColorSpan(context.getColor(R.color.colorPrimary)),
                                             valueStringSub, valueStringSub + 1,
                                             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                                         )
@@ -154,7 +154,7 @@ class SearchModule(private val context: Context) {
                                     .indexOf("</em>")
                                 if (season_title_sub_start >= 0 && season_title_sub_end >= 0) {
                                     season_title_spannable.setSpan(
-                                        ForegroundColorSpan(context.resources.getColor(R.color.colorPrimary)),
+                                        ForegroundColorSpan(context.getColor(R.color.colorPrimary)),
                                         season_title_sub_start, season_title_sub_end,
                                         Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                                     )
@@ -193,7 +193,7 @@ class SearchModule(private val context: Context) {
                                         .indexOf("</em>")
                                     if (episode_title_sub_start >= 0 && episode_title_sub_end >= 0) {
                                         episode_title_spannable.setSpan(
-                                            ForegroundColorSpan(context.resources.getColor(R.color.colorPrimary)),
+                                            ForegroundColorSpan(context.getColor(R.color.colorPrimary)),
                                             episode_title_sub_start, episode_title_sub_end,
                                             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                                         )

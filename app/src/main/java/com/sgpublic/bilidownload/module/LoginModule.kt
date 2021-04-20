@@ -77,9 +77,6 @@ class LoginModule(private val context: Context) {
         val cp = Cipher.getInstance("RSA/ECB/PKCS1Padding")
         cp.init(Cipher.ENCRYPT_MODE, pubKey)
         var passwordEncrypted = Base64Util.encode(cp.doFinal((hash + password).toByteArray()))
-        passwordEncrypted?.let {
-            return
-        }
         passwordEncrypted = URLEncoder.encode(passwordEncrypted, "UTF-8")
         val call = helper.getLoginRequest(username, passwordEncrypted)
         call.enqueue(object : okhttp3.Callback {
@@ -232,6 +229,6 @@ class LoginModule(private val context: Context) {
     interface Callback {
         fun onFailure(code: Int, message: String?, e: Throwable?)
         fun onLimited()
-        fun onResult(token: TokenData?, mid: Long)
+        fun onResult(token: TokenData, mid: Long)
     }
 }

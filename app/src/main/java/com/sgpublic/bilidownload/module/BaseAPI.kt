@@ -57,7 +57,7 @@ class BaseAPI(private val accessToken: String) {
         )
         val headerArray: Map<String, Any> = mutableMapOf(
                 "Cookie" to cookie,
-                "User-Agent" to "Mozilla/5.0 (sgpublic2002@gmail.com)",
+                "User-Agent" to user_agent,
         )
         return onReturn(url, argArray, headerArray, METHOD_GET, false)
     }
