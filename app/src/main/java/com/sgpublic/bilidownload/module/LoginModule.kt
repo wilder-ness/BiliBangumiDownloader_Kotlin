@@ -1,10 +1,14 @@
 package com.sgpublic.bilidownload.module
 
 import android.content.Context
-import android.util.Log
+import com.sgpublic.bilidownload.R
+import com.sgpublic.bilidownload.data.TokenData
 import com.sgpublic.bilidownload.util.Base64Util
+import io.reactivex.annotations.Beta
 import okhttp3.Call
 import okhttp3.Response
+import org.json.JSONException
+import org.json.JSONObject
 import java.io.IOException
 import java.net.URLEncoder
 import java.net.UnknownHostException
@@ -14,83 +18,80 @@ import java.util.*
 import javax.crypto.Cipher
 
 class LoginModule(private val context: Context) {
-    private var username: String? = null
-    private var password: String? = null
-    private var cookie: String? = null
-    private var user_agent: String? = null
-    private var hash: String? = null
-    private var public_key = ""
-    private var callback_private: Callback? = null
-    private val helper: BaseAPI
-    fun loginInAccount(username: String?, password: String?, callback: Callback?) {
+    private lateinit var username: String
+    private lateinit var password: String
+    private lateinit var cookie: String
+    private lateinit var userAgent: String
+    private lateinit var hash: String
+    private lateinit var publicKey: String
+    private lateinit var callbackPrivate: Callback
+    private val helper: BaseAPI = BaseAPI()
+
+    fun loginInAccount(username: String, password: String, callback: Callback) {
         this.username = username
         this.password = password
-        callback_private = callback
-        publicKey
+        this.callbackPrivate = callback
+        this.getPublicKey()
     }
 
-    private val publicKey: Unit
-        private get() {
-            val call = helper.keyRequest
-            call!!.enqueue(object : okhttp3.Callback {
-                override fun onFailure(call: Call, e: IOException) {
-                    if (e is UnknownHostException) {
-                        callback_private!!.onFailure(
+    private fun getPublicKey(){
+        val call = helper.getKeyRequest()
+        call.enqueue(object : okhttp3.Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                if (e is UnknownHostException) {
+                    callbackPrivate.onFailure(
                             -101,
                             context.getString(R.string.error_network),
                             e
-                        )
-                    } else {
-                        callback_private!!.onFailure(-102, e.message, e)
-                    }
+                    )
+                } else {
+                    callbackPrivate.onFailure(-102, e.message, e)
                 }
+            }
 
-                @Throws(IOException::class)
-                override fun onResponse(call: Call, response: Response) {
-                    val result = Objects.requireNonNull(response.body)!!.string()
-                    try {
-                        var `object` = JSONObject(result)
-                        if (`object`.getInt("code") == 0) {
-                            `object` = `object`.getJSONObject("data")
-                            hash = `object`.getString("hash")
-                            public_key = `object`.getString("key")
-                            postAccount()
-                        } else {
-                            callback_private!!.onFailure(-104, null, null)
-                        }
-                    } catch (e: JSONException) {
-                        callback_private!!.onFailure(-103, null, e)
+            @Throws(IOException::class)
+            override fun onResponse(call: Call, response: Response) {
+                val result = response.body?.string().toString()
+                try {
+                    var json = JSONObject(result)
+                    if (json.getInt("code") == 0) {
+                        json = json.getJSONObject("data")
+                        hash = json.getString("hash")
+                        this@LoginModule.publicKey = json.getString("key")
+                        postAccount()
+                    } else {
+                        callbackPrivate.onFailure(-104, null, null)
                     }
+                } catch (e: JSONException) {
+                    callbackPrivate.onFailure(-103, null, e)
                 }
-            })
-        }
+            }
+        })
+    }
 
     private fun postAccount() {
-        var password_encrypted: String? = ""
-        public_key = public_key.replace("\n", "").substring(26, 242)
-        try {
-            val keySpec = X509EncodedKeySpec(Base64Util.Decode(public_key))
-            val keyFactory = KeyFactory.getInstance("RSA")
-            val pubKey = keyFactory.generatePublic(keySpec)
-            val cp = Cipher.getInstance("RSA/ECB/PKCS1Padding")
-            cp.init(Cipher.ENCRYPT_MODE, pubKey)
-            password_encrypted = Base64Util.Encode(cp.doFinal(hash + password!!.toByteArray()))
-            password_encrypted = URLEncoder.encode(password_encrypted, "UTF-8")
-        } catch (e: Exception) {
-            callback_private!!.onFailure(-125, e.message, e)
-            e.printStackTrace()
+        this.publicKey = this.publicKey.replace("\n", "").substring(26, 242)
+        val keySpec = X509EncodedKeySpec(Base64Util.decode(this.publicKey))
+        val keyFactory = KeyFactory.getInstance("RSA")
+        val pubKey = keyFactory.generatePublic(keySpec)
+        val cp = Cipher.getInstance("RSA/ECB/PKCS1Padding")
+        cp.init(Cipher.ENCRYPT_MODE, pubKey)
+        var passwordEncrypted = Base64Util.encode(cp.doFinal((hash + password).toByteArray()))
+        passwordEncrypted?.let {
+            return
         }
-        val call = helper.getLoginRequest(username, password_encrypted)
-        call!!.enqueue(object : okhttp3.Callback {
+        passwordEncrypted = URLEncoder.encode(passwordEncrypted, "UTF-8")
+        val call = helper.getLoginRequest(username, passwordEncrypted)
+        call.enqueue(object : okhttp3.Callback {
             override fun onFailure(call: Call, e: IOException) {
                 if (e is UnknownHostException) {
-                    callback_private!!.onFailure(
+                    callbackPrivate.onFailure(
                         -121,
                         context.getString(R.string.error_network),
                         null
                     )
                 } else {
-                    callback_private!!.onFailure(-122, e.message, e)
+                    callbackPrivate.onFailure(-122, e.message, e)
                 }
             }
 
@@ -98,79 +99,72 @@ class LoginModule(private val context: Context) {
             override fun onResponse(call: Call, response: Response) {
                 val result = Objects.requireNonNull(response.body)!!.string()
                 try {
-                    var `object` = JSONObject(result)
-                    if (`object`.getInt("code") == 0) {
-                        `object` = `object`.getJSONObject("data")
-                        if (`object`.getInt("status") == 0) {
-                            `object` = `object`.getJSONObject("token_info")
+                    var json = JSONObject(result)
+                    if (json.getInt("code") == 0) {
+                        json = json.getJSONObject("data")
+                        if (json.getInt("status") == 0) {
+                            json = json.getJSONObject("token_info")
                             val token = TokenData()
-                            token.access_token = `object`.getString("access_token")
-                            token.refresh_token = `object`.getString("refresh_token")
-                            token.expires_in =
-                                `object`.getLong("expires_in") * 1000L + BaseAPI.Companion.getTS()
-                                    .toLong()
-                            callback_private!!.onResult(token, `object`.getLong("mid"))
-                        } else if (`object`.getInt("status") == 3 || `object`.getInt("status") == 2) {
-                            callback_private!!.onLimited()
+                            token.access_token = json.getString("access_token")
+                            token.refresh_token = json.getString("refresh_token")
+                            token.expires_in = json.getLong("expires_in") * 1000L + BaseAPI.ts.toLong()
+                            callbackPrivate.onResult(token, json.getLong("mid"))
+                        } else if (json.getInt("status") == 3 || json.getInt("status") == 2) {
+                            callbackPrivate.onLimited()
                         } else {
-                            callback_private!!.onFailure(-126, null, null)
+                            callbackPrivate.onFailure(-126, null, null)
                         }
                     } else {
-                        callback_private!!.onFailure(-124, `object`.getString("message"), null)
+                        callbackPrivate.onFailure(-124, json.getString("message"), null)
                     }
                 } catch (e: JSONException) {
-                    callback_private!!.onFailure(-123, null, e)
+                    callbackPrivate.onFailure(-123, null, e)
                 }
             }
         })
     }
 
-    fun loginInWeb(cookie: String?, user_agent: String?, callback: Callback?) {
+    fun loginInWeb(cookie: String, user_agent: String, callback: Callback) {
         this.cookie = cookie
-        this.user_agent = user_agent
-        callback_private = callback
-        confirmUri
+        this.userAgent = user_agent
+        this.callbackPrivate = callback
+        this.getConfirmUri()
     }
 
-    private val confirmUri: Unit
-        private get() {
-            val call = helper.getLoginWebRequest(cookie, user_agent)
-            call!!.enqueue(object : okhttp3.Callback {
-                override fun onFailure(call: Call, e: IOException) {
-                    if (e is UnknownHostException) {
-                        callback_private!!.onFailure(
-                            -131,
-                            context.getString(R.string.error_network),
-                            e
-                        )
-                    } else {
-                        callback_private!!.onFailure(-132, e.message, e)
-                    }
-                }
-
-                @Throws(IOException::class)
-                override fun onResponse(call: Call, response: Response) {
-                    val result = Objects.requireNonNull(response.body)!!.string()
-                    try {
-                        val `object` = JSONObject(result)
-                        val confirm_uri: String =
-                            `object`.getJSONObject("data").getString("confirm_uri")
-                        getAccessKey(confirm_uri)
-                    } catch (e: JSONException) {
-                        callback_private!!.onFailure(-133, null, e)
-                    }
-                }
-            })
-        }
-
-    private fun getAccessKey(confirm_uri: String) {
-        val call = helper.getLoginConfirmRequest(confirm_uri, cookie, user_agent)
-        call!!.enqueue(object : okhttp3.Callback {
+    private fun getConfirmUri(){
+        val call = helper.getLoginWebRequest(cookie, userAgent)
+        call.enqueue(object : okhttp3.Callback {
             override fun onFailure(call: Call, e: IOException) {
                 if (e is UnknownHostException) {
-                    callback_private!!.onFailure(-141, context.getString(R.string.error_network), e)
+                    callbackPrivate.onFailure(-131, context.getString(R.string.error_network), e)
                 } else {
-                    callback_private!!.onFailure(-142, e.message, e)
+                    callbackPrivate.onFailure(-132, e.message, e)
+                }
+            }
+
+            @Throws(IOException::class)
+            override fun onResponse(call: Call, response: Response) {
+                val result = Objects.requireNonNull(response.body)!!.string()
+                try {
+                    val json = JSONObject(result)
+                    val confirmUri: String =
+                            json.getJSONObject("data").getString("confirm_uri")
+                    getAccessKey(confirmUri)
+                } catch (e: JSONException) {
+                    callbackPrivate.onFailure(-133, null, e)
+                }
+            }
+        })
+    }
+
+    private fun getAccessKey(confirm_uri: String) {
+        val call = helper.getLoginConfirmRequest(confirm_uri, cookie, userAgent)
+        call.enqueue(object : okhttp3.Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                if (e is UnknownHostException) {
+                    callbackPrivate.onFailure(-141, context.getString(R.string.error_network), e)
+                } else {
+                    callbackPrivate.onFailure(-142, e.message, e)
                 }
             }
 
@@ -179,57 +173,57 @@ class LoginModule(private val context: Context) {
                 val location = response.header("Location")
                 if (location != null && location != "") {
                     if (location.startsWith("http://link.acg.tv/forum.php")) {
-                        val url_split = location.split("&").toTypedArray()
-                        val access_key = url_split[0].substring(40)
-                        val mid = url_split[1].substring(4).toLong()
+                        val urlSplit = location.split("&").toTypedArray()
+                        val accessKey = urlSplit[0].substring(40)
+                        val mid = urlSplit[1].substring(4).toLong()
                         val token = TokenData()
-                        token.access_token = access_key
+                        token.access_token = accessKey
                         token.refresh_token = ""
-                        token.expires_in = 2592000000L + BaseAPI.Companion.getTS().toLong()
-                        callback_private!!.onResult(token, mid)
+                        token.expires_in = 2592000000L + BaseAPI.ts.toLong()
+                        callbackPrivate.onResult(token, mid)
                     } else {
-                        callback_private!!.onFailure(-144, null, null)
+                        callbackPrivate.onFailure(-144, null, null)
                     }
                 } else {
-                    callback_private!!.onFailure(-143, null, null)
+                    callbackPrivate.onFailure(-143, null, null)
                 }
             }
         })
     }
 
-    fun refreshToken(access_token: String?, refresh_token: String?, callback: Callback?) {
-        callback_private = callback
+    @Beta
+    fun refreshToken(access_token: String, refresh_token: String, callback: Callback) {
+        callbackPrivate = callback
         val helper = BaseAPI(access_token)
         val call = helper.getRefreshTokenRequest(refresh_token)
-        call!!.enqueue(object : okhttp3.Callback {
+        call.enqueue(object : okhttp3.Callback {
             override fun onFailure(call: Call, e: IOException) {
                 if (e is UnknownHostException) {
-                    callback_private!!.onFailure(-151, context.getString(R.string.error_network), e)
+                    callbackPrivate.onFailure(-151, context.getString(R.string.error_network), e)
                 } else {
-                    callback_private!!.onFailure(-152, e.message, e)
+                    callbackPrivate.onFailure(-152, e.message, e)
                 }
             }
 
             @Throws(IOException::class)
             override fun onResponse(call: Call, response: Response) {
                 val result = Objects.requireNonNull(response.body)!!.string()
-                Log.d(TAG, result)
                 try {
-                    var `object` = JSONObject(result)
-                    if (`object`.getInt("code") == 0) {
-                        `object` = `object`.getJSONObject("data")
+                    var json = JSONObject(result)
+                    if (json.getInt("code") == 0) {
+                        json = json.getJSONObject("data")
                         val token = TokenData()
-                        token.access_token = `object`.getString("access_token")
-                        token.refresh_token = `object`.getString("refresh_token")
+                        token.access_token = json.getString("access_token")
+                        token.refresh_token = json.getString("refresh_token")
                         token.expires_in =
-                            `object`.getLong("expires_in") * 1000L + BaseAPI.Companion.getTS()
+                            json.getLong("expires_in") * 1000L + BaseAPI.ts
                                 .toLong()
-                        callback_private!!.onResult(token, `object`.getLong("mid"))
+                        callbackPrivate.onResult(token, json.getLong("mid"))
                     } else {
-                        callback_private!!.onFailure(-154, `object`.getString("message"), null)
+                        callbackPrivate.onFailure(-154, json.getString("message"), null)
                     }
                 } catch (e: JSONException) {
-                    callback_private!!.onFailure(-153, null, e)
+                    callbackPrivate.onFailure(-153, null, e)
                 }
             }
         })
@@ -239,13 +233,5 @@ class LoginModule(private val context: Context) {
         fun onFailure(code: Int, message: String?, e: Throwable?)
         fun onLimited()
         fun onResult(token: TokenData?, mid: Long)
-    }
-
-    companion object {
-        private const val TAG = "LoginHelper"
-    }
-
-    init {
-        helper = BaseAPI()
     }
 }

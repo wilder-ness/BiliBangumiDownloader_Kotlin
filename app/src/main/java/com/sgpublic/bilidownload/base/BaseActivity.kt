@@ -1,10 +1,7 @@
 package com.sgpublic.bilidownload.base
 
-import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.Toast
@@ -13,8 +10,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.viewbinding.ViewBinding
 import com.sgpublic.bilidownload.util.ActivityCollector
-import com.sgpublic.bilidownload.databinding.ActivityAboutBinding
-import com.sgpublic.bilidownload.util.ConfigManager
+import com.sgpublic.bilidownload.manager.ConfigManager
 import com.yanzhenjie.sofia.Sofia
 import me.imid.swipebacklayout.lib.SwipeBackLayout
 import me.imid.swipebacklayout.lib.app.SwipeBackActivity

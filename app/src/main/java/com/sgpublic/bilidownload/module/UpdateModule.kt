@@ -1,35 +1,41 @@
 package com.sgpublic.bilidownload.module
 
+import android.app.DownloadManager
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.database.Cursor
 import android.net.Uri
-import com.sgpublic.bilidownload.util.DownloadTaskManager
+import androidx.core.content.FileProvider
+import com.sgpublic.bilidownload.R
+import com.sgpublic.bilidownload.manager.ConfigManager
+import com.sgpublic.bilidownload.manager.DownloadTaskManager
 import okhttp3.Call
 import okhttp3.Response
+import org.json.JSONException
+import org.json.JSONObject
 import java.io.File
 import java.io.IOException
 import java.net.UnknownHostException
 import java.util.*
 
 class UpdateModule(private val context: Context) {
-    private val TAG = "UpdateHelper"
-    private var callback_private: Callback? = null
-    fun getUpdate(type: Int, callback: Callback?) {
+    private lateinit var callbackPrivate: Callback
+    fun getUpdate(type: Int, callback: Callback) {
         val helper = BaseAPI()
-        callback_private = callback
-        val version: String
-        version = if (type != 1 && !BaseAPI.Companion.getTS().endsWith("387")) {
+        this.callbackPrivate = callback
+        val version: String = if (type != 1 && !BaseAPI.ts.endsWith("387")) {
             "release"
-        } else {
-            "debug"
-        }
+        } else { "debug" }
         val call = helper.getUpdateRequest(version)
-        call!!.enqueue(object : okhttp3.Callback {
+        call.enqueue(object : okhttp3.Callback {
             override fun onFailure(call: Call, e: IOException) {
                 if (e is UnknownHostException) {
-                    callback_private!!.onFailure(-711, context.getString(R.string.error_network), e)
+                    callbackPrivate.onFailure(-711, context.getString(R.string.error_network), e)
                 } else {
-                    callback_private!!.onFailure(-712, null, e)
+                    callbackPrivate.onFailure(-712, null, e)
                 }
             }
 
@@ -37,56 +43,54 @@ class UpdateModule(private val context: Context) {
             override fun onResponse(call: Call, response: Response) {
                 val result = response.body!!.string()
                 try {
-                    val ver_code_now = context.packageManager
+                    val verCodeNow = context.packageManager
                         .getPackageInfo(context.packageName, 0).versionCode
-                    val `object` = JSONObject(result)
-                    val update_table: JSONObject = `object`.getJSONObject("latest")
-                    val disable: Long = update_table.getInt("disable").toLong()
+                    val json = JSONObject(result)
+                    val updateTable: JSONObject = json.getJSONObject("latest")
+                    val disable: Long = updateTable.getInt("disable").toLong()
                     if (disable == 0L) {
-                        val ver_code: Long = update_table.getInt("ver_code").toLong()
-                        if (ver_code > ver_code_now) {
-                            val url_dl = ("https://sgpublic.xyz/bilidl/update/apk/app-"
+                        val verCode: Long = updateTable.getInt("ver_code").toLong()
+                        if (verCode > verCodeNow) {
+                            val urlDl = ("https://sgpublic.xyz/bilidl/update/apk/app-"
                                     + version + ".apk")
-                            val ver_name: String = update_table.getString("ver_name")
-                            val size_string: String = DownloadTaskManager.getSizeString(url_dl)
+                            val verName: String = updateTable.getString("ver_name")
+                            val sizeString: String = DownloadTaskManager.getSizeString(urlDl)
                             if (version == "debug") {
-                                val sharedPreferences: SharedPreferences =
-                                    context.getSharedPreferences("user", Context.MODE_PRIVATE)
-                                if (sharedPreferences.getString("beta", "") != ver_name) {
-                                    sharedPreferences.edit()
-                                        .putString("beta", ver_name)
-                                        .apply()
-                                    callback_private!!.onUpdate(
-                                        0, ver_name, size_string,
-                                        update_table.getString("changelog"), url_dl
+                                val manager = ConfigManager(context)
+                                if (manager.getString("beta", "") != verName) {
+                                    manager.putString("beta", verName)
+                                            .apply()
+                                    callbackPrivate.onUpdate(
+                                        0, verName, sizeString,
+                                        updateTable.getString("changelog"), urlDl
                                     )
                                 } else {
-                                    callback_private!!.onUpToDate()
+                                    callbackPrivate.onUpToDate()
                                 }
                             } else {
                                 val is_force =
-                                    if (update_table.getInt("force_ver") > ver_code_now) 1 else 0
-                                callback_private!!.onUpdate(
-                                    is_force, ver_name, size_string,
-                                    update_table.getString("changelog"), url_dl
+                                    if (updateTable.getInt("force_ver") > verCodeNow) 1 else 0
+                                callbackPrivate.onUpdate(
+                                    is_force, verName, sizeString,
+                                    updateTable.getString("changelog"), urlDl
                                 )
                             }
                         } else {
-                            callback_private!!.onUpToDate()
+                            callbackPrivate.onUpToDate()
                         }
                     } else {
-                        var disable_reason: String = update_table.getString("disable_reason")
+                        var disable_reason: String = updateTable.getString("disable_reason")
                         if (disable_reason == "") {
                             disable_reason = context.getString(R.string.text_update_disable_unknown)
                         }
-                        callback_private!!.onDisabled(
+                        callbackPrivate.onDisabled(
                             disable, disable_reason
                         )
                     }
                 } catch (e: JSONException) {
-                    callback_private!!.onFailure(-703, null, e)
+                    callbackPrivate.onFailure(-703, null, e)
                 } catch (e: PackageManager.NameNotFoundException) {
-                    callback_private!!.onFailure(-705, null, e)
+                    callbackPrivate.onFailure(-705, null, e)
                 }
             }
         })
@@ -116,39 +120,23 @@ class UpdateModule(private val context: Context) {
     }
 
     private fun openAPK(fileSavePath: String) {
-        val file = File(
-            Objects
-                .requireNonNull(Uri.parse(fileSavePath).path)
-        )
+        val file = File(Uri.parse(fileSavePath).path.toString())
         val filePath = file.absolutePath
         val intent = Intent(Intent.ACTION_VIEW)
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        val data: Uri
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            data = FileProvider.getUriForFile(
-                context.applicationContext,
-                "com.sgpublic.bilidownload.fileprovider",
-                File(filePath)
-            )
-            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        } else {
-            data = Uri.fromFile(file)
-        }
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK and Intent.FLAG_GRANT_READ_URI_PERMISSION
+        val data: Uri = FileProvider.getUriForFile(
+            context.applicationContext,
+            "com.sgpublic.bilidownload.fileprovider",
+            File(filePath)
+        )
         intent.setDataAndType(data, "application/vnd.android.package-archive")
         context.startActivity(intent)
     }
 
     interface Callback {
-        fun onFailure(code: Int, message: String?, e: Throwable?)
+        fun onFailure(code: Int, message: String?, e: Throwable)
         fun onUpToDate()
-        fun onUpdate(
-            force: Int,
-            ver_name: String?,
-            size_string: String?,
-            changelog: String?,
-            dl_url: String?
-        )
-
-        fun onDisabled(time: Long, reason: String?)
+        fun onUpdate(force: Int, ver_name: String, size_string: String, changelog: String, dl_url: String)
+        fun onDisabled(time: Long, reason: String)
     }
 }

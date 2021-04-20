@@ -18,6 +18,7 @@ import java.util.*
 
 class SearchModule(private val context: Context) {
     private val helper: BaseAPI = BaseAPI()
+
     fun getHotWord(callback: HotWordCallback) {
         val call = helper.getHotWordRequest()
         call.enqueue(object : Callback {
@@ -72,25 +73,25 @@ class SearchModule(private val context: Context) {
                         val suggestions = ArrayList<Spannable>()
                         try {
                             val array = json.getJSONObject("result").getJSONArray("tag")
-                            var array_index = 0
-                            while (array_index < 7 && array_index < array.length()) {
-                                json = array.getJSONObject(array_index)
-                                val value_string = json.getString("value")
-                                val value_spannable: Spannable = SpannableString(value_string)
+                            var arrayIndex = 0
+                            while (arrayIndex < 7 && arrayIndex < array.length()) {
+                                json = array.getJSONObject(arrayIndex)
+                                val valueString = json.getString("value")
+                                val valueSpannable: Spannable = SpannableString(valueString)
                                 for (value_index in 0 until keyword.length) {
-                                    val keyword_index =
+                                    val keywordIndex =
                                         keyword.substring(value_index).substring(0, 1)
-                                    val value_string_sub = value_string.indexOf(keyword_index)
-                                    if (value_string_sub >= 0) {
-                                        value_spannable.setSpan(
+                                    val valueStringSub = valueString.indexOf(keywordIndex)
+                                    if (valueStringSub >= 0) {
+                                        valueSpannable.setSpan(
                                             ForegroundColorSpan(context.resources.getColor(R.color.colorPrimary)),
-                                            value_string_sub, value_string_sub + 1,
+                                            valueStringSub, valueStringSub + 1,
                                             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                                         )
                                     }
                                 }
-                                suggestions.add(value_spannable)
-                                array_index++
+                                suggestions.add(valueSpannable)
+                                arrayIndex++
                             }
                             callback.onResult(suggestions)
                         } catch (e: JSONException) {

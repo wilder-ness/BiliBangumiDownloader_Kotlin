@@ -1,10 +1,9 @@
 package com.sgpublic.bilidownload.activity
 
 import android.os.Bundle
-import android.os.Handler
 import com.sgpublic.bilidownload.base.BaseActivity
 import com.sgpublic.bilidownload.databinding.ActivityWelcomeBinding
-import com.sgpublic.bilidownload.util.ConfigManager
+import com.sgpublic.bilidownload.manager.ConfigManager
 import java.util.*
 
 class Welcome: BaseActivity<ActivityWelcomeBinding>() {

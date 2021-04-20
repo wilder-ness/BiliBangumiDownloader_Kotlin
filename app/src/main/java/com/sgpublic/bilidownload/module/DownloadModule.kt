@@ -5,6 +5,8 @@ import com.sgpublic.bilidownload.R
 import com.sgpublic.bilidownload.data.Episode.DownloadData
 import com.sgpublic.bilidownload.data.Episode.InfoData.Companion.PAYMENT_NORMAL
 import com.sgpublic.bilidownload.data.Episode.TaskData
+import com.sgpublic.bilidownload.manager.ConfigManager
+import com.sgpublic.bilidownload.manager.DownloadTaskManager
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -14,6 +16,11 @@ import java.net.UnknownHostException
 class DownloadModule(private val context: Context) {
     private val helper: BaseAPI
     private val downloadData: DownloadData = DownloadData()
+
+    init {
+        val accessToken = ConfigManager(context).getString("access_token")
+        helper = BaseAPI(accessToken)
+    }
 
     //{"code":-10403,"message":"抱歉您所在地区不可观看！"}
     //{"code":-10403,"message":"大会员专享限制"}
@@ -26,7 +33,7 @@ class DownloadModule(private val context: Context) {
         val call = helper.getEpisodeOfficialRequest(data.episodeData.cid, data.quality)
         try {
             val response = call.execute()
-            val json = JSONObject(response.body!!.string())
+            val json = JSONObject(response.body?.string().toString())
             if (json.getInt("code") != 0) {
                 if (json.getInt("code") == -10403 && data.episodeData.payment == PAYMENT_NORMAL) {
                     getBiliplusDownloadInfo(data)
@@ -68,16 +75,16 @@ class DownloadModule(private val context: Context) {
                 getKghostDownloadInfo(data)
                 return
             }
-            val `object` = JSONObject(response.body!!.string())
-            if (`object`.getInt("code") != 0) {
+            val json = JSONObject(response.body?.string().toString())
+            if (json.getInt("code") != 0) {
                 downloadData.code = -514
-                downloadData.message = `object`.getString("message")
+                downloadData.message = json.getString("message")
             } else {
-                if (!`object`.isNull("durl")) {
+                if (!json.isNull("durl")) {
                     downloadData.code = -515
                     downloadData.message = context.getString(R.string.error_download_flv)
-                } else if (!`object`.isNull("dash")) {
-                    getDASHData(`object`, data.quality)
+                } else if (!json.isNull("dash")) {
+                    getDASHData(json, data.quality)
                 } else {
                     downloadData.code = -516
                 }
@@ -101,16 +108,16 @@ class DownloadModule(private val context: Context) {
         val call = helper.getEpisodeOfficialRequest(data.episodeData.cid, data.quality)
         try {
             val response = call.execute()
-            val `object` = JSONObject(response.body!!.string())
-            if (`object`.getInt("code") != 0) {
+            val json = JSONObject(response.body?.string().toString())
+            if (json.getInt("code") != 0) {
                 downloadData.code = -524
-                downloadData.message = `object`.getString("message")
+                downloadData.message = json.getString("message")
             } else {
-                if (!`object`.isNull("durl")) {
+                if (!json.isNull("durl")) {
                     downloadData.code = -525
                     downloadData.message = context.getString(R.string.error_download_flv)
-                } else if (!`object`.isNull("dash")) {
-                    getDASHData(`object`, data.quality)
+                } else if (!json.isNull("dash")) {
+                    getDASHData(json, data.quality)
                 } else {
                     downloadData.code = -526
                 }
@@ -134,52 +141,51 @@ class DownloadModule(private val context: Context) {
     }
 
     @Throws(JSONException::class)
-    private fun getDASHData(`object`: JSONObject, qn: Int) {
+    private fun getDASHData(json: JSONObject, qn: Int) {
         val downloadData = DownloadData.DASHDownloadData()
-        downloadData.time_length = `object`.getLong("timelength")
-        val private_object: JSONObject = `object`.getJSONObject("dash")
-        var array: JSONArray
-        array = private_object.getJSONArray("video")
-        var object_video: JSONObject? = null
+        downloadData.time_length = json.getLong("timelength")
+        val privateObject: JSONObject = json.getJSONObject("dash")
+        var array: JSONArray = privateObject.getJSONArray("video")
+        var objectVideo: JSONObject? = null
         for (array_index in 0 until array.length()) {
-            val object_video_index: JSONObject = array.getJSONObject(array_index)
-            val video_qn_pre = if (object_video == null) -1 else object_video.getInt("id")
-            val video_qn_this: Int = object_video_index.getInt("id")
-            if (video_qn_this > video_qn_pre && video_qn_this <= qn) {
-                object_video = object_video_index
+            val objectVideoIndex: JSONObject = array.getJSONObject(array_index)
+            val videoQnPre = objectVideo?.getInt("id") ?: -1
+            val videoQnThis: Int = objectVideoIndex.getInt("id")
+            if (videoQnThis in (videoQnPre + 1)..qn) {
+                objectVideo = objectVideoIndex
             }
         }
-        if (object_video != null) {
-            downloadData.video_url = object_video.getString("base_url")
-            downloadData.video_bandwidth = object_video.getLong("bandwidth")
+        if (objectVideo != null) {
+            downloadData.video_url = objectVideo.getString("base_url")
+            downloadData.video_bandwidth = objectVideo.getLong("bandwidth")
             downloadData.video_codecid =
-                if (object_video.isNull("codecid")) 0 else object_video.getInt("codecid")
-            downloadData.video_id = object_video.getInt("id")
+                if (objectVideo.isNull("codecid")) 0 else objectVideo.getInt("codecid")
+            downloadData.video_id = objectVideo.getInt("id")
             downloadData.video_md5 =
-                if (object_video.isNull("md5")) "" else object_video.getString("md5")
+                if (objectVideo.isNull("md5")) "" else objectVideo.getString("md5")
             downloadData.video_size = DownloadTaskManager.getSizeLong(downloadData.video_url)
         }
-        array = private_object.getJSONArray("audio")
-        var object_audio: JSONObject? = null
+        array = privateObject.getJSONArray("audio")
+        var objectAudio: JSONObject? = null
         for (array_index in 0 until array.length()) {
-            val object_audio_index: JSONObject = array.getJSONObject(array_index)
-            val audio_qn_pre = if (object_audio == null) -1 else object_audio.getInt("id") - 30200
-            val audio_qn_this: Int = object_audio_index.getInt("id") - 30200
-            if (audio_qn_this > audio_qn_pre && audio_qn_this <= qn) {
-                object_audio = object_audio_index
+            val objectAudioIndex: JSONObject = array.getJSONObject(array_index)
+            val audioQnPre = if (objectAudio == null) -1 else objectAudio.getInt("id") - 30200
+            val audioQnThis: Int = objectAudioIndex.getInt("id") - 30200
+            if (audioQnThis in (audioQnPre + 1)..qn) {
+                objectAudio = objectAudioIndex
             }
         }
-        if (object_audio != null) {
-            downloadData.audio_url = object_audio.getString("base_url")
-            downloadData.audio_bandwidth = object_audio.getLong("bandwidth")
+        if (objectAudio != null) {
+            downloadData.audio_url = objectAudio.getString("base_url")
+            downloadData.audio_bandwidth = objectAudio.getLong("bandwidth")
             downloadData.audio_codecid =
-                if (object_audio.isNull("codecid")) 0 else object_audio.getInt("codecid")
-            downloadData.audio_id = object_audio.getInt("id")
+                if (objectAudio.isNull("codecid")) 0 else objectAudio.getInt("codecid")
+            downloadData.audio_id = objectAudio.getInt("id")
             downloadData.audio_md5 =
-                if (object_audio.isNull("md5")) "" else object_audio.getString("md5")
+                if (objectAudio.isNull("md5")) "" else objectAudio.getString("md5")
             downloadData.audio_size = DownloadTaskManager.getSizeLong(downloadData.audio_url)
         }
-        if (object_video != null && object_audio != null) {
+        if (objectVideo != null && objectAudio != null) {
             this.downloadData.code = 0
             downloadData.total_size = downloadData.audio_size + downloadData.video_size
             this.downloadData.data = downloadData
@@ -187,11 +193,5 @@ class DownloadModule(private val context: Context) {
             this.downloadData.code = -531
             this.downloadData.message = context.getString(R.string.error_download_url)
         }
-    }
-
-    init {
-        val access_token = context.getSharedPreferences("user", Context.MODE_PRIVATE)
-            .getString("access_token", "")
-        helper = BaseAPI(access_token)
     }
 }

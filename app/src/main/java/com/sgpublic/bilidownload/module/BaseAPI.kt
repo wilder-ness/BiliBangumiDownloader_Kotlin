@@ -1,6 +1,7 @@
 package com.sgpublic.bilidownload.module
 
 import com.sgpublic.bilidownload.util.MyLog
+import io.reactivex.annotations.Beta
 import okhttp3.*
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
@@ -21,10 +22,10 @@ class BaseAPI(private val accessToken: String) {
     fun getKeyRequest(): Call {
         val url = "https://passport.bilibili.com/api/oauth2/getKey"
         val argArray: Map<String, Any> = mutableMapOf(
-            "appkey" to android_key,
-            "mobi_app" to platform,
-            "platform" to platform,
-            "ts" to ts,
+                "appkey" to android_key,
+                "mobi_app" to platform,
+                "platform" to platform,
+                "ts" to ts,
         )
         return onReturn(url, argArray, null, METHOD_POST, true)
     }
@@ -32,17 +33,17 @@ class BaseAPI(private val accessToken: String) {
     fun getLoginRequest(username: String, password_encrypted: String): Call {
         val url = "https://passport.bilibili.com/api/v3/oauth2/login"
         val argArray: Map<String, Any> = mutableMapOf(
-            "appkey" to android_key,
-            "build" to build,
-            "gee_type" to 10,
-            "mobi_app" to platform,
-            "password" to password_encrypted,
-            "platform" to platform,
-            "ts" to ts,
-            "username" to username,
+                "appkey" to android_key,
+                "build" to build,
+                "gee_type" to 10,
+                "mobi_app" to platform,
+                "password" to password_encrypted,
+                "platform" to platform,
+                "ts" to ts,
+                "username" to username,
         )
         val headerArray: Map<String, Any> = mutableMapOf(
-            "User-Agent" to "Mozilla/5.0 (bbcallen@gmail.com)",
+                "User-Agent" to "Mozilla/5.0 (bbcallen@gmail.com)",
         )
         return onReturn(url, argArray, headerArray, METHOD_POST, true)
     }
@@ -50,27 +51,39 @@ class BaseAPI(private val accessToken: String) {
     fun getLoginWebRequest(cookie: String, user_agent: String = "Mozilla/5.0 (bbcallen@gmail.com)"): Call {
         val url = "https://passport.bilibili.com/login/app/third"
         val argArray: Map<String, Any> = mutableMapOf(
-            "appkey" to "27eb53fc9058f8c3",
-            "api" to "http://link.acg.tv/forum.php",
-            "sign" to "67ec798004373253d60114caaad89a8c",
+                "appkey" to "27eb53fc9058f8c3",
+                "api" to "http://link.acg.tv/forum.php",
+                "sign" to "67ec798004373253d60114caaad89a8c",
         )
         val headerArray: Map<String, Any> = mutableMapOf(
-            "Cookie" to cookie,
-            "User-Agent" to "Mozilla/5.0 (sgpublic2002@gmail.com)",
+                "Cookie" to cookie,
+                "User-Agent" to "Mozilla/5.0 (sgpublic2002@gmail.com)",
         )
         return onReturn(url, argArray, headerArray, METHOD_GET, false)
     }
 
+    @Beta
+    fun getRefreshTokenRequest(refreshToken: String): Call {
+        val url = "https://passport.bilibili.com/api/oauth2/refreshToken"
+        val argArray: Map<String, Any> = mutableMapOf(
+                "access_token" to accessToken,
+                "appkey" to android_key,
+                "refresh_token" to refreshToken,
+                "ts" to ts,
+        )
+        return onReturn(url, argArray, null, METHOD_POST, true)
+    }
+
     fun getLoginConfirmRequest(url: String, cookie: String, userAgent: String = "Mozilla/5.0 (bbcallen@gmail.com)"): Call {
         val headerArray: Map<String, Any> = mutableMapOf(
-            "Connection" to "keep-alive",
-            "Upgrade-Insecure-Requests" to 1,
-            "User-Agent" to userAgent,
-            "Accept" to "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*,q=0.8",
-            "Accept-Encoding" to "gzip, deflate",
-            "Accept-Language" to "zh-CH,en-US;q=0.8",
-            "Cookie" to cookie,
-            "X-Requested-With" to "com.sgpublic.bilidownload",
+                "Connection" to "keep-alive",
+                "Upgrade-Insecure-Requests" to 1,
+                "User-Agent" to userAgent,
+                "Accept" to "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*,q=0.8",
+                "Accept-Encoding" to "gzip, deflate",
+                "Accept-Language" to "zh-CH,en-US;q=0.8",
+                "Cookie" to cookie,
+                "X-Requested-With" to "com.sgpublic.bilidownload",
         )
         return onReturn(url, null, headerArray, METHOD_GET, false)
     }
@@ -78,7 +91,7 @@ class BaseAPI(private val accessToken: String) {
     fun getUserInfoRequest(mid: String): Call {
         val url = "https://api.bilibili.com/x/space/acc/info"
         val argArray: Map<String, Any> = mutableMapOf(
-            "mid" to mid,
+                "mid" to mid,
         )
         return onReturn(url, argArray, null, METHOD_GET, false)
     }
@@ -86,14 +99,14 @@ class BaseAPI(private val accessToken: String) {
     fun getFollowsRequest(mid: Long, pageIndex: Int, status: Int): Call {
         val url = "https://api.bilibili.com/pgc/app/follow/v2/bangumi"
         val argArray: Map<String, Any> = mutableMapOf(
-            "access_key" to accessToken,
-            "appkey" to android_key,
-            "build" to build,
-            "mid" to mid,
-            "pn" to pageIndex,
-            "ps" to 18,
-            "status" to status,
-            "ts" to ts,
+                "access_key" to accessToken,
+                "appkey" to android_key,
+                "build" to build,
+                "mid" to mid,
+                "pn" to pageIndex,
+                "ps" to 18,
+                "status" to status,
+                "ts" to ts,
         )
         return onReturn(url, argArray, null, METHOD_GET, true)
     }
@@ -106,11 +119,11 @@ class BaseAPI(private val accessToken: String) {
     fun getSearchResultRequest(keyword: String): Call {
         val url = "https://api.bilibili.com/x/web-interface/search/type"
         val argArray: Map<String, Any> = mutableMapOf(
-            "search_type" to "media_bangumi",
-            "keyword" to keyword,
+                "search_type" to "media_bangumi",
+                "keyword" to keyword,
         )
         val headerArray: Map<String, Any> = mutableMapOf(
-            "Referer" to "https://search.bilibili.com",
+                "Referer" to "https://search.bilibili.com",
         )
         return onReturn(url, argArray, headerArray, METHOD_GET, false)
     }
@@ -118,18 +131,18 @@ class BaseAPI(private val accessToken: String) {
     fun getSearchSuggestRequest(keyword: String): Call {
         val url = "https://s.search.bilibili.com/main/suggest"
         val argArray: Map<String, Any> = mutableMapOf(
-            "main_ver" to "v1",
-            "special_acc_num" to 1,
-            "topic_acc_num" to 1,
-            "upuser_acc_num" to 3,
-            "tag_num" to 10,
-            "special_num" to 10,
-            "bangumi_num" to 10,
-            "upuser_num" to 3,
-            "term" to keyword,
+                "main_ver" to "v1",
+                "special_acc_num" to 1,
+                "topic_acc_num" to 1,
+                "upuser_acc_num" to 3,
+                "tag_num" to 10,
+                "special_num" to 10,
+                "bangumi_num" to 10,
+                "upuser_num" to 3,
+                "term" to keyword,
         )
         val headerArray: Map<String, Any> = mutableMapOf(
-            "Referer" to "https://search.bilibili.com",
+                "Referer" to "https://search.bilibili.com",
         )
         return onReturn(url, argArray, headerArray, METHOD_GET, false)
     }
@@ -137,12 +150,12 @@ class BaseAPI(private val accessToken: String) {
     fun getSeasonInfoAppRequest(sid: Long): Call {
         val url = "https://api.bilibili.com/pgc/view/app/season"
         val argArray: Map<String, Any> = mutableMapOf(
-            "access_key" to accessToken,
-            "appkey" to android_key,
-            "build" to build,
-            "platform" to platform,
-            "season_id" to sid,
-            "ts" to ts,
+                "access_key" to accessToken,
+                "appkey" to android_key,
+                "build" to build,
+                "platform" to platform,
+                "season_id" to sid,
+                "ts" to ts,
         )
         return onReturn(url, argArray, null, METHOD_GET, true)
     }
@@ -150,14 +163,14 @@ class BaseAPI(private val accessToken: String) {
     fun getSeasonInfoWebRequest(sid: Long): Call {
         val url = "https://api.bilibili.com/pgc/view/web/season"
         val argArray: Map<String, Any> = mutableMapOf(
-            "access_key" to accessToken,
-            "appkey" to android_key,
-            "build" to build,
-            "c_locale" to "hk_CN",
-            "platform" to platform,
-            "s_locale" to "hk_CN",
-            "season_id" to sid,
-            "ts" to ts,
+                "access_key" to accessToken,
+                "appkey" to android_key,
+                "build" to build,
+                "c_locale" to "hk_CN",
+                "platform" to platform,
+                "s_locale" to "hk_CN",
+                "season_id" to sid,
+                "ts" to ts,
         )
         return onReturn(url, argArray, null, METHOD_GET, true)
     }
@@ -166,7 +179,7 @@ class BaseAPI(private val accessToken: String) {
     fun getSeasonInfoOldRequest(sid: Long): Call {
         val url = "https://bangumi.bilibili.com/view/web_api/season"
         val argArray: Map<String, Any> = mutableMapOf(
-            "season_id" to sid,
+                "season_id" to sid,
         )
         return onReturn(url, argArray, null, METHOD_GET, false)
     }
@@ -174,18 +187,18 @@ class BaseAPI(private val accessToken: String) {
     fun getEpisodeOfficialRequest(cid: Long, qn: Int): Call {
         val url = "https://api.bilibili.com/pgc/player/api/playurl"
         val argArray: Map<String, Any> = mutableMapOf(
-            "access_key" to accessToken,
-            "build" to build,
-            "cid" to cid,
-            "fnval" to 16,
-            "fnver" to 0,
-            "fourk" to 1,
-            "module" to "bangumi",
-            "otype" to "otype",
-            "platform" to platform,
-            "qn" to qn,
-            "season_type" to 1,
-            "ts" to ts,
+                "access_key" to accessToken,
+                "build" to build,
+                "cid" to cid,
+                "fnval" to 16,
+                "fnver" to 0,
+                "fourk" to 1,
+                "module" to "bangumi",
+                "otype" to "otype",
+                "platform" to platform,
+                "qn" to qn,
+                "season_type" to 1,
+                "ts" to ts,
         )
         return onReturn(url, argArray, null, METHOD_GET, true)
     }
@@ -193,19 +206,19 @@ class BaseAPI(private val accessToken: String) {
     fun getEpisodeBiliplusRequest(cid: Long, qn: Int): Call {
         val url = "https://www.biliplus.com/BPplayurl.php"
         val argArray: Map<String, Any> = mutableMapOf(
-            "access_key" to accessToken,
-            "appkey" to android_key,
-            "build" to build,
-            "cid" to cid,
-            "fnval" to 16,
-            "fnver" to 0,
-            "fourk" to 1,
-            "module" to "bangumi",
-            "otype" to "otype",
-            "platform" to platform,
-            "qn" to qn,
-            "season_type" to 1,
-            "ts" to ts,
+                "access_key" to accessToken,
+                "appkey" to android_key,
+                "build" to build,
+                "cid" to cid,
+                "fnval" to 16,
+                "fnver" to 0,
+                "fourk" to 1,
+                "module" to "bangumi",
+                "otype" to "otype",
+                "platform" to platform,
+                "qn" to qn,
+                "season_type" to 1,
+                "ts" to ts,
         )
         return onReturn(url, argArray, null, METHOD_GET, true)
     }
@@ -213,20 +226,20 @@ class BaseAPI(private val accessToken: String) {
     fun getEpisodeKghostRequest(cid: Long, qn: Int): Call {
         val url = "https://bilibili-tw-api.kghost.info/pgc/player/web/playurl"
         val argArray: Map<String, Any> = mutableMapOf(
-            "access_key" to accessToken,
-            "appkey" to android_key,
-            "build" to build,
-            "cid" to cid,
-            "device" to platform,
-            "fnval" to 16,
-            "fnver" to 0,
-            "fourk" to 1,
-            "module" to "bangumi",
-            "otype" to "otype",
-            "platform" to platform,
-            "qn" to qn,
-            "season_type" to 1,
-            "ts" to ts,
+                "access_key" to accessToken,
+                "appkey" to android_key,
+                "build" to build,
+                "cid" to cid,
+                "device" to platform,
+                "fnval" to 16,
+                "fnver" to 0,
+                "fourk" to 1,
+                "module" to "bangumi",
+                "otype" to "otype",
+                "platform" to platform,
+                "qn" to qn,
+                "season_type" to 1,
+                "ts" to ts,
         )
         return onReturn(url, argArray, null, METHOD_GET, true)
     }
@@ -234,7 +247,7 @@ class BaseAPI(private val accessToken: String) {
     fun getProxyRequest_iill(call: Call): Call {
         val url = "https://biliproxy.iill.moe/"
         val argArray: Map<String, Any> = mutableMapOf(
-            "url" to call.request().url,
+                "url" to call.request().url,
         )
         return onReturn(url, argArray, null, METHOD_GET, false)
     }
@@ -242,7 +255,7 @@ class BaseAPI(private val accessToken: String) {
     fun getDanmakuRequest(cid: Long): Call {
         val url = "https://api.bilibili.com/x/v1/dm/list.so"
         val argArray: Map<String, Any> = mutableMapOf(
-            "oid" to cid,
+                "oid" to cid,
         )
         return onReturn(url, argArray, null, METHOD_GET, false)
     }
@@ -250,7 +263,7 @@ class BaseAPI(private val accessToken: String) {
     fun getUpdateRequest(version: String): Call {
         val url = "https://sgpublic.xyz/bilidl/update/index.php"
         val argArray: Map<String, Any> = mutableMapOf(
-            "version" to version,
+                "version" to version,
         )
         return onReturn(url, argArray, null, METHOD_POST, false)
     }

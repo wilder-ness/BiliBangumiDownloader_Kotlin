@@ -1,9 +1,10 @@
-package com.sgpublic.bilidownload.util
+package com.sgpublic.bilidownload.manager
 
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
+import com.sgpublic.bilidownload.util.MyLog
 import java.util.*
 
 class ConfigManager(val context: Context) {
@@ -86,25 +87,25 @@ class ConfigManager(val context: Context) {
         fun checkClient(context: Context): ClientItem? {
             val sharedPreferences = context.getSharedPreferences("user", Context.MODE_PRIVATE)
             val clientItems: ArrayList<ClientItem> = getInstalledClients(context)
-            var package_name =
+            var packageName =
                 sharedPreferences.getString("package", TYPES_PACK[0])
-            var package_index = -1
+            var packageIndex = -1
             var result: ClientItem? = null
             if (clientItems.size > 0) {
                 for (index in clientItems.indices) {
-                    if (clientItems[index].packageName == package_name) {
-                        package_index = index
+                    if (clientItems[index].packageName == packageName) {
+                        packageIndex = index
                         break
                     }
                 }
-                if (package_index < 0) {
-                    package_index = 0
+                if (packageIndex < 0) {
+                    packageIndex = 0
                 }
-                package_name = clientItems[package_index].packageName
+                packageName = clientItems[packageIndex].packageName
                 sharedPreferences.edit()
-                    .putString("package", package_name)
+                    .putString("package", packageName)
                     .apply()
-                result = ClientItem(TYPES_STRING[package_index], package_name)
+                result = ClientItem(TYPES_STRING[packageIndex], packageName)
             }
             return result
         }
@@ -140,19 +141,19 @@ class ConfigManager(val context: Context) {
         defValue
     )
 
-    fun putString(key: String, value: String): ConfigManager{
+    fun putString(key: String, value: String): ConfigManager {
         editor.putString(key, value)
         return this
     }
-    fun putInt(key: String, value: Int): ConfigManager{
+    fun putInt(key: String, value: Int): ConfigManager {
         editor.putInt(key, value)
         return this
     }
-    fun putLong(key: String, value: Long): ConfigManager{
+    fun putLong(key: String, value: Long): ConfigManager {
         editor.putLong(key, value)
         return this
     }
-    fun putBoolean(key: String, value: Boolean): ConfigManager{
+    fun putBoolean(key: String, value: Boolean): ConfigManager {
         editor.putBoolean(key, value)
         return this
     }

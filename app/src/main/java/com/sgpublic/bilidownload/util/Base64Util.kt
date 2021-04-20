@@ -1,7 +1,7 @@
-package com.sgpublic.bilidownload.base
+package com.sgpublic.bilidownload.util
 
 object Base64Util {
-    fun Decode(content: String): ByteArray? {
+    fun decode(content: String): ByteArray {
         val data = content.toCharArray()
         val codes = ByteArray(256)
         for (i in 0..255) {
@@ -57,14 +57,10 @@ object Base64Util {
                 }
             }
         }
-        return if (index != out.size) {
-            ByteArray(0)
-        } else {
-            out
-        }
+        return if (index != out.size) { ByteArray(0) } else { out }
     }
 
-    fun Encode(content: ByteArray): String? {
+    fun encode(content: ByteArray): String {
         val alphabet =
             "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=".toCharArray()
         val out = CharArray((content.size + 2) / 3 * 4)
