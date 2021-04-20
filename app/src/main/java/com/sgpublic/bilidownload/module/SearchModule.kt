@@ -16,12 +16,11 @@ import java.net.UnknownHostException
 import java.text.SimpleDateFormat
 import java.util.*
 
-class SearchModule(context: Context) {
-    private val helper: BaseAPI
-    private val context: Context
+class SearchModule(private val context: Context) {
+    private val helper: BaseAPI = BaseAPI()
     fun getHotWord(callback: HotWordCallback) {
-        val call = helper.hotWordRequest
-        call!!.enqueue(object : Callback {
+        val call = helper.getHotWordRequest()
+        call.enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 if (e is UnknownHostException) {
                     callback.onFailure(-801, null, e)
@@ -34,17 +33,17 @@ class SearchModule(context: Context) {
             override fun onResponse(call: Call, response: Response) {
                 val result = Objects.requireNonNull(response.body)!!.string()
                 try {
-                    var `object` = JSONObject(result)
-                    if (`object`.getInt("code") == 0) {
+                    var json = JSONObject(result)
+                    if (json.getInt("code") == 0) {
                         val hotWords = ArrayList<String>()
-                        val array = `object`.getJSONArray("list")
+                        val array = json.getJSONArray("list")
                         for (array_index in 0 until array.length()) {
-                            `object` = array.getJSONObject(array_index)
-                            hotWords.add(`object`.getString("keyword"))
+                            json = array.getJSONObject(array_index)
+                            hotWords.add(json.getString("keyword"))
                         }
                         callback.onResult(hotWords)
                     } else {
-                        callback.onFailure(-814, `object`.getString("message"), null)
+                        callback.onFailure(-814, json.getString("message"), null)
                     }
                 } catch (e: JSONException) {
                     callback.onFailure(-813, null, e)
@@ -55,7 +54,7 @@ class SearchModule(context: Context) {
 
     fun suggest(keyword: String, callback: SuggestCallback) {
         val call = helper.getSearchSuggestRequest(keyword)
-        call!!.enqueue(object : Callback {
+        call.enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 if (e is UnknownHostException) {
                     callback.onFailure(-811, context.getString(R.string.error_network), e)
@@ -68,15 +67,15 @@ class SearchModule(context: Context) {
             override fun onResponse(call: Call, response: Response) {
                 val result = Objects.requireNonNull(response.body)!!.string()
                 try {
-                    var `object` = JSONObject(result)
-                    if (`object`.getInt("code") == 0) {
+                    var json = JSONObject(result)
+                    if (json.getInt("code") == 0) {
                         val suggestions = ArrayList<Spannable>()
                         try {
-                            val array = `object`.getJSONObject("result").getJSONArray("tag")
+                            val array = json.getJSONObject("result").getJSONArray("tag")
                             var array_index = 0
                             while (array_index < 7 && array_index < array.length()) {
-                                `object` = array.getJSONObject(array_index)
-                                val value_string = `object`.getString("value")
+                                json = array.getJSONObject(array_index)
+                                val value_string = json.getString("value")
                                 val value_spannable: Spannable = SpannableString(value_string)
                                 for (value_index in 0 until keyword.length) {
                                     val keyword_index =
@@ -107,9 +106,9 @@ class SearchModule(context: Context) {
         })
     }
 
-    fun search(keyword: String?, callback: SearchCallback) {
+    fun search(keyword: String, callback: SearchCallback) {
         val call = helper.getSearchResultRequest(keyword)
-        call!!.enqueue(object : Callback {
+        call.enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 if (e is UnknownHostException) {
                     callback.onFailure(-821, context.getString(R.string.error_network), e)
@@ -122,26 +121,26 @@ class SearchModule(context: Context) {
             override fun onResponse(call: Call, response: Response) {
                 val result = Objects.requireNonNull(response.body)!!.string()
                 try {
-                    var `object` = JSONObject(result)
-                    if (`object`.getInt("code") == 0) {
+                    var json = JSONObject(result)
+                    if (json.getInt("code") == 0) {
                         val searchDataList = ArrayList<SearchData>()
-                        `object` = `object`.getJSONObject("data")
-                        if (!`object`.isNull("result")) {
-                            val array = `object`.getJSONArray("result")
+                        json = json.getJSONObject("data")
+                        if (!json.isNull("result")) {
+                            val array = json.getJSONArray("result")
                             for (array_index in 0 until array.length()) {
-                                `object` = array.getJSONObject(array_index)
+                                json = array.getJSONObject(array_index)
                                 val searchData = SearchData()
-                                searchData.angle_title = `object`.getString("angle_title")
-                                searchData.season_cover = "http:" + `object`.getString("cover")
-                                if (`object`.isNull("media_score")) {
+                                searchData.angle_title = json.getString("angle_title")
+                                searchData.season_cover = "http:" + json.getString("cover")
+                                if (json.isNull("media_score")) {
                                     searchData.media_score = 0.0
                                 } else {
-                                    searchData.media_score = `object`.getJSONObject("media_score")
+                                    searchData.media_score = json.getJSONObject("media_score")
                                         .getDouble("score")
                                 }
-                                searchData.season_id = `object`.getLong("season_id")
+                                searchData.season_id = json.getLong("season_id")
                                 //searchData.season_title = object.getString("season_title");
-                                val season_title_string = `object`.getString("title")
+                                val season_title_string = json.getString("title")
                                 val season_title_spannable: Spannable = SpannableString(
                                     season_title_string
                                         .replace("<em class=\"keyword\">", "")
@@ -160,27 +159,27 @@ class SearchModule(context: Context) {
                                     )
                                 }
                                 searchData.season_title = season_title_spannable
-                                if (`object`.getLong("pubtime") * 1000 > System.currentTimeMillis()) {
+                                if (json.getLong("pubtime") * 1000 > System.currentTimeMillis()) {
                                     searchData.selection_style = "grid"
                                 } else {
                                     searchData.selection_style =
-                                        `object`.getString("selection_style")
+                                        json.getString("selection_style")
                                 }
-                                val date = Date(`object`.getLong("pubtime") * 1000)
+                                val date = Date(json.getLong("pubtime") * 1000)
                                 val format = SimpleDateFormat("yyyy", Locale.CHINA)
                                 searchData.season_content = """
-                                    ${format.format(date)}｜${`object`.getString("season_type_name")}｜${
-                                    `object`.getString(
+                                    ${format.format(date)}｜${json.getString("season_type_name")}｜${
+                                    json.getString(
                                         "areas"
                                     )
                                 }
-                                    ${`object`.getString("styles")}
+                                    ${json.getString("styles")}
                                     """.trimIndent()
-                                var eps_array = `object`.getJSONArray("eps")
+                                var eps_array = json.getJSONArray("eps")
                                 if (eps_array.length() > 0) {
-                                    `object` = eps_array.getJSONObject(0)
-                                    searchData.episode_cover = `object`.getString("cover")
-                                    val episode_title_string = `object`.getString("long_title")
+                                    json = eps_array.getJSONObject(0)
+                                    searchData.episode_cover = json.getString("cover")
+                                    val episode_title_string = json.getString("long_title")
                                     val episode_title_spannable: Spannable = SpannableString(
                                         episode_title_string
                                             .replace("<em class=\"keyword\">", "")
@@ -199,10 +198,10 @@ class SearchModule(context: Context) {
                                         )
                                     }
                                     searchData.episode_title = episode_title_spannable
-                                    eps_array = `object`.getJSONArray("badges")
+                                    eps_array = json.getJSONArray("badges")
                                     if (eps_array.length() > 0) {
-                                        `object` = eps_array.getJSONObject(0)
-                                        searchData.episode_badges = `object`.getString("text")
+                                        json = eps_array.getJSONObject(0)
+                                        searchData.episode_badges = json.getString("text")
                                     } else {
                                         searchData.episode_badges = ""
                                     }
@@ -212,7 +211,7 @@ class SearchModule(context: Context) {
                         }
                         callback.onResult(searchDataList)
                     } else {
-                        callback.onFailure(-824, `object`.getString("message"), null)
+                        callback.onFailure(-824, json.getString("message"), null)
                     }
                 } catch (e: JSONException) {
                     callback.onFailure(-823, null, e)
@@ -234,14 +233,5 @@ class SearchModule(context: Context) {
     interface HotWordCallback {
         fun onFailure(code: Int, message: String?, e: Throwable?)
         fun onResult(hotWords: ArrayList<String>?)
-    }
-
-    companion object {
-        private const val TAG = "SearchHelper"
-    }
-
-    init {
-        helper = BaseAPI()
-        this.context = context
     }
 }

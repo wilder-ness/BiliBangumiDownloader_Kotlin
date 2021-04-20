@@ -1,7 +1,13 @@
 package com.sgpublic.bilidownload.module
 
 import android.content.Context
+import com.sgpublic.bilidownload.R
 import com.sgpublic.bilidownload.data.Episode.DownloadData
+import com.sgpublic.bilidownload.data.Episode.InfoData.Companion.PAYMENT_NORMAL
+import com.sgpublic.bilidownload.data.Episode.TaskData
+import org.json.JSONArray
+import org.json.JSONException
+import org.json.JSONObject
 import java.io.IOException
 import java.net.UnknownHostException
 
@@ -19,22 +25,22 @@ class DownloadModule(private val context: Context) {
     private fun getOfficialDownloadInfo(data: TaskData) {
         val call = helper.getEpisodeOfficialRequest(data.episodeData.cid, data.quality)
         try {
-            val response = call!!.execute()
-            val `object` = JSONObject(response.body!!.string())
-            if (`object`.getInt("code") != 0) {
-                if (`object`.getInt("code") == -10403 and data.episodeData.payment === PAYMENT_NORMAL) {
+            val response = call.execute()
+            val json = JSONObject(response.body!!.string())
+            if (json.getInt("code") != 0) {
+                if (json.getInt("code") == -10403 && data.episodeData.payment == PAYMENT_NORMAL) {
                     getBiliplusDownloadInfo(data)
                 } else {
                     downloadData.code = -501
-                    downloadData.message = `object`.getString("message")
+                    downloadData.message = json.getString("message")
                 }
             } else {
-                val type: String = `object`.getString("type")
+                val type: String = json.getString("type")
                 if (type == "FLV") {
                     downloadData.code = -505
                     downloadData.message = context.getString(R.string.error_download_flv)
                 } else if (type == "DASH") {
-                    getDASHData(`object`, data.quality)
+                    getDASHData(json, data.quality)
                 } else {
                     downloadData.code = -506
                 }
@@ -45,7 +51,7 @@ class DownloadModule(private val context: Context) {
                 downloadData.message = context.getString(R.string.error_network)
             } else {
                 downloadData.code = -502
-                downloadData.message = e.message
+                downloadData.message = e.message.toString()
             }
             downloadData.e = e
         } catch (e: JSONException) {
@@ -57,7 +63,7 @@ class DownloadModule(private val context: Context) {
     private fun getBiliplusDownloadInfo(data: TaskData) {
         val call = helper.getEpisodeOfficialRequest(data.episodeData.cid, data.quality)
         try {
-            val response = call!!.execute()
+            val response = call.execute()
             if (response.code == -504) {
                 getKghostDownloadInfo(data)
                 return
@@ -82,7 +88,7 @@ class DownloadModule(private val context: Context) {
                 downloadData.message = context.getString(R.string.error_network)
             } else {
                 downloadData.code = -512
-                downloadData.message = e.message
+                downloadData.message = e.message.toString()
             }
             downloadData.e = e
         } catch (e: JSONException) {
@@ -94,7 +100,7 @@ class DownloadModule(private val context: Context) {
     private fun getKghostDownloadInfo(data: TaskData) {
         val call = helper.getEpisodeOfficialRequest(data.episodeData.cid, data.quality)
         try {
-            val response = call!!.execute()
+            val response = call.execute()
             val `object` = JSONObject(response.body!!.string())
             if (`object`.getInt("code") != 0) {
                 downloadData.code = -524
@@ -115,7 +121,7 @@ class DownloadModule(private val context: Context) {
                 downloadData.message = context.getString(R.string.error_network)
             } else {
                 downloadData.code = -522
-                downloadData.message = e.message
+                downloadData.message = e.message.toString()
             }
             downloadData.e = e
         } catch (e: JSONException) {
@@ -129,7 +135,7 @@ class DownloadModule(private val context: Context) {
 
     @Throws(JSONException::class)
     private fun getDASHData(`object`: JSONObject, qn: Int) {
-        val downloadData = DASHDownloadData()
+        val downloadData = DownloadData.DASHDownloadData()
         downloadData.time_length = `object`.getLong("timelength")
         val private_object: JSONObject = `object`.getJSONObject("dash")
         var array: JSONArray

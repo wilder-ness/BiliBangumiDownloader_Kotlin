@@ -1,24 +1,25 @@
 package com.sgpublic.bilidownload.data
 
-import com.sgpublic.bilidownload.data.episode.QualityData
+import com.sgpublic.bilidownload.data.Episode.QualityData
 import java.util.*
+import kotlin.collections.ArrayList
 
-data class SeasonData (
-    var area: Int,
-    var base_info: SeriesData,
-    var actors: String,
-    var alias: String,
-    var evaluate: String,
-    var staff: String,
-    var styles: String,
-    var description: String,
-    var rating: Double,
-    var actors_lines: Int,
-    var staff_lines: Int,
-    var season_type: Int,
-    var series: ArrayList<SeriesData>,
-    var qualities: ArrayList<QualityData>
-){
+class SeasonData {
+    var area = 0
+    var base_info: SeriesData = SeriesData()
+    var actors = ""
+    var alias = ""
+    var evaluate = ""
+    var staff = ""
+    var styles = ""
+    var description = ""
+    var rating = 0.0
+    var actors_lines = 0
+    var staff_lines = 0
+    var season_type = 0
+    var series: ArrayList<SeriesData> = ArrayList()
+    var qualities: ArrayList<QualityData> = ArrayList()
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false

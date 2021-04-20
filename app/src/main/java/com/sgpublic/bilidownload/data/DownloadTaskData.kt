@@ -1,8 +1,8 @@
 package com.sgpublic.bilidownload.data
 
-data class DownloadTaskData (
-    var status: Int,
-    var progress: Int,
-    var download_bytes: Long,
-    var total_bytes: Long,
-)
+class DownloadTaskData {
+    var status = 0
+    var progress = 0
+    var download_bytes = 0L
+    var total_bytes = 0L
+}
