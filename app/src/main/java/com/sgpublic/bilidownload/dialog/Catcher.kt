@@ -1,4 +1,4 @@
-package com.sgpublic.bilidownload.activity
+package com.sgpublic.bilidownload.dialog
 
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -15,10 +15,10 @@ import com.sgpublic.bilidownload.base.BaseActivity
 import com.sgpublic.bilidownload.databinding.ActivityExceptionBinding
 import com.sgpublic.bilidownload.util.ActivityCollector
 
-class ExceptionDialog: BaseActivity<ActivityExceptionBinding>() {
+class Catcher: BaseActivity<ActivityExceptionBinding>() {
     companion object {
         fun startActivity(context: Context, logContent: String){
-           val intent = Intent(context, ExceptionDialog::class.java)
+           val intent = Intent(context, Catcher::class.java)
             intent.putExtra("logContent", logContent)
             context.startActivity(intent)
         }

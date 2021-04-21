@@ -1,6 +1,5 @@
 package com.sgpublic.bilidownload.activity
 
-import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
@@ -8,6 +7,7 @@ import androidx.core.widget.addTextChangedListener
 import com.sgpublic.bilidownload.R
 import com.sgpublic.bilidownload.base.BaseActivity
 import com.sgpublic.bilidownload.databinding.ActivityLoginBinding
+import com.sgpublic.bilidownload.dialog.Catcher
 import com.sgpublic.bilidownload.manager.ConfigManager
 
 class Login: BaseActivity<ActivityLoginBinding>() {
@@ -45,7 +45,7 @@ class Login: BaseActivity<ActivityLoginBinding>() {
             binding.loginBannerRight.setImageResource(images[1])
         }
         binding.loginInWeb.setOnClickListener {
-            ExceptionDialog.startActivity(this@Login, "logContent")
+            Catcher.startActivity(this@Login, "logContent")
 //            LoginWeb.startActivity(this@Login)
         }
     }
