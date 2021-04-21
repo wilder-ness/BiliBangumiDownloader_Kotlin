@@ -8,6 +8,4 @@ class Main: BaseActivity<ActivityMainBinding>() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
 
     }
-
-    override fun getContentView(): ActivityMainBinding = ActivityMainBinding.inflate(layoutInflater)
 }

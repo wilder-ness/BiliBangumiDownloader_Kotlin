@@ -51,7 +51,5 @@ class Login: BaseActivity<ActivityLoginBinding>() {
         }
     }
 
-    override fun getContentView(): ActivityLoginBinding = ActivityLoginBinding.inflate(layoutInflater)
-
     override fun onSetSwipeBackEnable(): Boolean = true
 }

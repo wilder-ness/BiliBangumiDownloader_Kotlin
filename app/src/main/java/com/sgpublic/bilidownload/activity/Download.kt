@@ -9,7 +9,5 @@ class Download: BaseActivity<ActivityDownloadBinding>() {
 
     }
 
-    override fun getContentView(): ActivityDownloadBinding = ActivityDownloadBinding.inflate(layoutInflater)
-
     override fun onSetSwipeBackEnable(): Boolean = true
 }

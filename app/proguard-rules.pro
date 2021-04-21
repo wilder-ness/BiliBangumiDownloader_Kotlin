@@ -19,3 +19,8 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+-keep class androidx.recyclerview.widget.* { *; }
+-keep class androidx.viewpager2.widget.* { *; }
+
+-keep class * implements androidx.viewbinding.ViewBinding { *; }

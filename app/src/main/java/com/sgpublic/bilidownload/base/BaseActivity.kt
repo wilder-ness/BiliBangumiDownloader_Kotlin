@@ -2,6 +2,7 @@ package com.sgpublic.bilidownload.base
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.Toast
@@ -10,17 +11,13 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.viewbinding.ViewBinding
 import com.sgpublic.bilidownload.util.ActivityCollector
-import com.sgpublic.bilidownload.manager.ConfigManager
 import com.yanzhenjie.sofia.Sofia
 import me.imid.swipebacklayout.lib.SwipeBackLayout
 import me.imid.swipebacklayout.lib.app.SwipeBackActivity
-import org.json.JSONArray
-import org.json.JSONException
-import org.json.JSONObject
-import java.io.*
+import java.lang.reflect.ParameterizedType
 import java.util.*
 
-abstract class BaseActivity<T: ViewBinding>: SwipeBackActivity() {
+abstract class BaseActivity<T : ViewBinding>: SwipeBackActivity() {
     protected lateinit var binding: T
 
     private val edgeSize: Int = 200
@@ -35,15 +32,21 @@ abstract class BaseActivity<T: ViewBinding>: SwipeBackActivity() {
         swipeBackLayout.setEdgeTrackingEnabled(SwipeBackLayout.EDGE_LEFT)
         swipeBackLayout.setEdgeSize(edgeSize)
 
-        binding = getContentView()
-        setContentView(binding.root)
+        getContentView()
         onViewSetup()
         onActivityCreated(savedInstanceState)
     }
 
     protected abstract fun onActivityCreated(savedInstanceState: Bundle?)
 
-    protected abstract fun getContentView(): T
+    @Suppress("UNCHECKED_CAST")
+    private fun getContentView() {
+        val parameterizedType: ParameterizedType = javaClass.genericSuperclass as ParameterizedType
+        val clazz = parameterizedType.actualTypeArguments[0] as Class<T>
+        val method = clazz.getMethod("inflate", LayoutInflater::class.java)
+        binding = method.invoke(null, layoutInflater) as T
+        setContentView(binding.root)
+    }
 
     protected open fun onSetSwipeBackEnable(): Boolean = false
 
@@ -71,8 +74,10 @@ abstract class BaseActivity<T: ViewBinding>: SwipeBackActivity() {
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>,
-        grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int, permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         val fragments = supportFragmentManager.fragments
         for (fragment in fragments) {

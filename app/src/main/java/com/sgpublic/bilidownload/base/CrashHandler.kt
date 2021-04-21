@@ -57,13 +57,9 @@ object CrashHandler {
     }
 
     fun saveExplosion(e: Throwable?, code: Int): String? {
-        if (this.logPath == null) {
-            return null
-        }
+        this.logPath ?: return null
         try {
-            if (e == null) {
-                return null
-            }
+            e ?: return null
             val exceptionLog: JSONObject
             var exceptionLogContent = JSONArray()
             val exception = File(logPath, "exception.json")

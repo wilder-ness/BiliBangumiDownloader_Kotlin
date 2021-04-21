@@ -9,7 +9,5 @@ class OtherFollows: BaseActivity<ActivityOtherFollowsBinding>() {
 
     }
 
-    override fun getContentView(): ActivityOtherFollowsBinding = ActivityOtherFollowsBinding.inflate(layoutInflater)
-
     override fun onSetSwipeBackEnable(): Boolean = true
 }

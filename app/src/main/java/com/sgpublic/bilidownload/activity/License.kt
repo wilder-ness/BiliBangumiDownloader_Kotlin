@@ -9,7 +9,5 @@ class License: BaseActivity<ActivityLicenseBinding>() {
 
     }
 
-    override fun getContentView(): ActivityLicenseBinding = ActivityLicenseBinding.inflate(layoutInflater)
-
     override fun onSetSwipeBackEnable(): Boolean = true
 }

@@ -18,7 +18,5 @@ class LoginWeb: BaseActivity<ActivityLoginWebBinding>() {
 
     }
 
-    override fun getContentView(): ActivityLoginWebBinding = ActivityLoginWebBinding.inflate(layoutInflater)
-
     override fun onSetSwipeBackEnable(): Boolean = true
 }

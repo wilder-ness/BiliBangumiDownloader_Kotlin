@@ -9,7 +9,5 @@ class Search: BaseActivity<ActivitySearchBinding>() {
 
     }
 
-    override fun getContentView(): ActivitySearchBinding = ActivitySearchBinding.inflate(layoutInflater)
-
     override fun onSetSwipeBackEnable(): Boolean = true
 }

@@ -9,7 +9,5 @@ class Explore: BaseActivity<ActivityExploreBinding>() {
 
     }
 
-    override fun getContentView(): ActivityExploreBinding = ActivityExploreBinding.inflate(layoutInflater)
-
     override fun onSetSwipeBackEnable(): Boolean = true
 }

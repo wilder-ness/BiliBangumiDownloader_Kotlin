@@ -9,7 +9,5 @@ class Season: BaseActivity<ActivitySeasonBinding>() {
 
     }
 
-    override fun getContentView(): ActivitySeasonBinding = ActivitySeasonBinding.inflate(layoutInflater)
-
     override fun onSetSwipeBackEnable(): Boolean = true
 }

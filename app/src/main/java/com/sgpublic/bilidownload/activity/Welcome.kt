@@ -200,6 +200,4 @@ class Welcome: BaseActivity<ActivityWelcomeBinding>(), UpdateModule.Callback {
         builder.setPositiveButton(R.string.text_ok) { _, _ -> ActivityCollector.finishAll() }
         runOnUiThread { builder.show() }
     }
-
-    override fun getContentView(): ActivityWelcomeBinding = ActivityWelcomeBinding.inflate(layoutInflater)
 }

@@ -9,7 +9,5 @@ class Setting: BaseActivity<ActivitySettingBinding>() {
 
     }
 
-    override fun getContentView(): ActivitySettingBinding = ActivitySettingBinding.inflate(layoutInflater)
-
     override fun onSetSwipeBackEnable(): Boolean = true
 }
