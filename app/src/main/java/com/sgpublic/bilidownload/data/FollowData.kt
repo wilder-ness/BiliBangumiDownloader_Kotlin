@@ -1,16 +1,16 @@
 package com.sgpublic.bilidownload.data
 
-class FollowData {
-    var badge = ""
-    var badge_color = 0
-    var badge_color_night = 0
-    var cover = ""
-    var square_cover = ""
-    var is_finish = 0
-    var title = ""
-    var season_id = 0L
-    var new_ep_cover = ""
-    var new_ep_id = 0L
-    var new_ep_index_show = ""
-    var new_ep_is_new = 0
-}
+data class FollowData (
+        var badge: String = "",
+        var badge_color: Int = 0,
+        var badge_color_night: Int = 0,
+        var cover: String = "",
+        var square_cover: String = "",
+        var is_finish: Int = 0,
+        var title: String = "",
+        var season_id: Long = 0L,
+        var new_ep_cover: String = "",
+        var new_ep_id: Long = 0L,
+        var new_ep_index_show: String = "",
+        var new_ep_is_new: Int = 0
+)

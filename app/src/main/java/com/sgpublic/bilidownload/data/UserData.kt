@@ -1,12 +1,12 @@
 package com.sgpublic.bilidownload.data
 
-class UserData {
-    var name = ""
-    var sex = 0
-    var face = ""
-    var sign = ""
-    var level = 0
-    var vip_label = ""
-    var vip_type = 0
-    var vip_state = 0
-}
+data class UserData (
+        var name: String = "",
+        var sex: Int = 0,
+        var face: String = "",
+        var sign: String = "",
+        var level: Int = 0,
+        var vip_label: String = "",
+        var vip_type: Int = 0,
+        var vip_state: Int = 0
+)

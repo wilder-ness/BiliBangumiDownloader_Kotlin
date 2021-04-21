@@ -4,17 +4,17 @@ import com.sgpublic.bilidownload.data.DownloadTaskData
 import com.sgpublic.bilidownload.data.SeriesData
 import java.util.*
 
-class TaskData {
-    var code = 0
-    var message = ""
-    var quality = 0
-    var season_type = 0
-    var season_type_name = ""
-    var media_type = 0
-    var seriesData: SeriesData = SeriesData()
-    var episodeData: InfoData = InfoData()
-    var task_info: DownloadTaskData = DownloadTaskData()
-
+class TaskData(
+        var code: Int = 0,
+        var message: String = "",
+        var quality: Int = 0,
+        var season_type: Int = 0,
+        var season_type_name: String = "",
+        var media_type: Int = 0,
+        var seriesData: SeriesData = SeriesData(),
+        var episodeData: InfoData = InfoData(),
+        var task_info: DownloadTaskData = DownloadTaskData()
+) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false

@@ -16,7 +16,7 @@
     </queries>
 
     <application
-        android:name=".base.Application"
+        android:name=".Application"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
@@ -35,6 +35,8 @@
         <activity android:name=".activity.OtherFollows" />
         <activity android:name=".activity.Season" />
         <activity android:name=".activity.Download"/>
+        <activity android:name=".activity.ExceptionDialog"
+            android:theme="@style/DialogStyle" />
         <activity
             android:name=".activity.Main"
             android:launchMode="singleTop" />
