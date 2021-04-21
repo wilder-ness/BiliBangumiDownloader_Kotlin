@@ -1,112 +1,136 @@
-package com.sgpublic.bilidownload.util;
+package com.sgpublic.bilidownload.util
 
-import android.util.Log;
+import android.util.Log
+import com.sgpublic.bilidownload.BuildConfig
 
-import com.sgpublic.bilidownload.BuildConfig;
+object MyLog {
+    private val out = BuildConfig.DEBUG
 
-import java.util.HashMap;
-import java.util.Map;
-
-public class MyLog {
-    private final static boolean out = BuildConfig.DEBUG;
-
-    public static void v(Object message){
-        if (out){
-            doLog(Log::v, message);
-        }
-    }
-
-    public static void v(Object message, Throwable e){
-        if (out){
-            doLog((tag, message1, e1) -> Log.v(tag, message1), message, e);
-        }
-    }
-
-    public static void d(Object message){
-        if (out){
-            doLog(Log::d, message);
-        }
-    }
-
-    public static void d(Object message, Throwable e){
-        if (out){
-            doLog((tag, message1, e1) -> Log.d(tag, message1), message, e);
-        }
-    }
-
-    public static void i(Object message){
-        if (out){
-            doLog(Log::w, message);
-        }
-    }
-
-    public static void i(Object message, Throwable e){
-        if (out){
-            doLog((tag, message1, e1) -> Log.i(tag, message1), message, e);
-        }
-    }
-
-    public static void w(Object message){
-        if (out){
-            doLog(Log::w, message);
-        }
-    }
-
-    public static void w(Object message, Throwable e){
-        if (out){
-            doLog((tag, message1, e1) -> Log.w(tag, message1), message, e);
-        }
-    }
-
-    public static void e(Object message){
-        if (out){
-            doLog(Log::e, message);
-        }
-    }
-
-    public static void e(Object message, Throwable e){
-        if (out){
-            doLog((tag, message1, e1) -> Log.e(tag, message1), message, e);
-        }
-    }
-
-    private static void doLog(DoLogSimplify doLog, Object message){
-        StackTraceElement ste = new Throwable().getStackTrace()[2];
-        String tag_name = "MyLog (" + ste.getFileName() + ":" + ste.getLineNumber() + ")";
-        String message_string = String.valueOf(message);
-        if (message_string.length() > 1024){
-            int index;
-            for (index = 0; index < message_string.length() - 1024; index = index + 1024){
-                String out = message_string.substring(index, index + 1024);
-                doLog.onLog(tag_name, out);
+    fun v(message: Any) {
+        doLog(object : DoLogSimplify {
+            override fun onLog(tag: String, message: String) {
+                Log.v(tag, message)
             }
-            doLog.onLog(tag_name, message_string.substring(index));
+        }, message)
+    }
+
+    fun v(message: Any, e: Throwable) {
+        doLog(object : DoLog {
+            override fun onLog(tag: String, message: String, e: Throwable) {
+                Log.v(tag, message)
+            }
+        }, message, e)
+    }
+
+    fun d(message: Any) {
+        doLog(object : DoLogSimplify {
+            override fun onLog(tag: String, message: String) {
+                Log.d(tag, message)
+            }
+        }, message)
+    }
+
+    fun d(message: Any, e: Throwable) {
+        doLog(object : DoLog {
+            override fun onLog(tag: String, message: String, e: Throwable) {
+                Log.d(tag, message)
+            }
+        }, message, e)
+    }
+
+    fun i(message: Any) {
+        doLog(object : DoLogSimplify {
+            override fun onLog(tag: String, message: String) {
+                Log.w(tag, message)
+            }
+        }, message)
+    }
+
+    fun i(message: Any, e: Throwable) {
+        doLog(object : DoLog {
+            override fun onLog(tag: String, message: String, e: Throwable) {
+                Log.i(tag, message)
+            }
+        }, message, e)
+    }
+
+    fun w(message: Any) {
+        doLog(object : DoLogSimplify {
+            override fun onLog(tag: String, message: String) {
+                Log.w(tag, message)
+            }
+        }, message)
+    }
+
+    fun w(message: Any, e: Throwable) {
+        doLog(object : DoLog {
+            override fun onLog(tag: String, message: String, e: Throwable) {
+                Log.w(tag, message)
+            }
+        }, message, e)
+    }
+
+    fun e(message: Any) {
+        doLog(object : DoLogSimplify {
+            override fun onLog(tag: String, message: String) {
+                Log.e(tag, message)
+            }
+        }, message)
+    }
+
+    fun e(message: Any, e: Throwable) {
+        doLog(object : DoLog {
+            override fun onLog(tag: String, message: String, e: Throwable) {
+                Log.e(tag, message)
+            }
+        }, message, e)
+    }
+
+    private fun doLog(doLog: DoLogSimplify, message: Any) {
+        if (!out) {
+            return
+        }
+        val ste = Throwable().stackTrace[2]
+        val tagName = "MyLog (" + ste.fileName + ":" + ste.lineNumber + ")"
+        val messageString = message.toString()
+        if (messageString.length > 1024) {
+            var index = 0
+            while (index < messageString.length - 1024) {
+                val out = messageString.substring(index, index + 1024)
+                doLog.onLog(tagName, out)
+                index += 1024
+            }
+            doLog.onLog(tagName, messageString.substring(index))
         } else {
-            doLog.onLog(tag_name, message_string);
+            doLog.onLog(tagName, messageString)
         }
     }
 
-    private static void doLog(DoLog doLog, Object message, Throwable e){
-        StackTraceElement ste = new Throwable().getStackTrace()[2];
-        String tag_name = "MyLog (" + ste.getFileName() + ":" + ste.getLineNumber() + ")";
-        String message_string = String.valueOf(message);
-        if (message_string.length() > 1024){
-            int index;
-            for (index = 0; index < message_string.length() - 1024; index = index + 1024){
-                String out = message_string.substring(index, index + 1024);
-                doLog.onLog(tag_name, out, e);
+    private fun doLog(doLog: DoLog, message: Any, e: Throwable) {
+        if (!out) {
+            return
+        }
+        val ste = Throwable().stackTrace[2]
+        val tagName = "MyLog (" + ste.fileName + ":" + ste.lineNumber + ")"
+        val messageString = message.toString()
+        if (messageString.length > 1024) {
+            var index = 0
+            while (index < messageString.length - 1024) {
+                val out = messageString.substring(index, index + 1024)
+                doLog.onLog(tagName, out, e)
+                index += 1024
             }
-            doLog.onLog(tag_name, message_string.substring(index), e);
+            doLog.onLog(tagName, messageString.substring(index), e)
         } else {
-            doLog.onLog(tag_name, message_string + "，[" + e.getClass().getCanonicalName() + "] " + e.getLocalizedMessage(), e);
+            doLog.onLog(tagName, messageString + "，[" + e.javaClass.canonicalName + "] " + e.localizedMessage, e)
         }
     }
 
     private interface DoLogSimplify {
-        void onLog(String tag, String message);
+        fun onLog(tag: String, message: String)
     }
 
     private interface DoLog {
-        void onLog(String tag, String message, Throwable e);
+        fun onLog(tag: String, message: String, e: Throwable)
     }
 }
