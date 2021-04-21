@@ -12,6 +12,7 @@ import com.kongzue.dialogx.interfaces.DialogLifecycleCallback
 import com.sgpublic.bilidownload.R
 import com.sgpublic.bilidownload.manager.ConfigManager
 import com.sgpublic.bilidownload.util.ActivityCollector
+import com.sgpublic.bilidownload.util.MyLog
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.*
@@ -27,6 +28,7 @@ object CrashHandler {
                 try {
                     Looper.loop()
                 } catch (e: Throwable){
+                    MyLog.e("应用意外停止", e)
                     val logContent = saveExplosion(e, -100) ?: continue
                     onExceptionCatch(context, logContent)
                 }

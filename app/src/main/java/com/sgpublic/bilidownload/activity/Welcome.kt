@@ -47,8 +47,8 @@ class Welcome: BaseActivity<ActivityWelcomeBinding>(), UpdateModule.Callback {
                     val refreshKey: String = ConfigManager.getString("refresh_key")
                     val expired = object : TimerTask() {
                         override fun run() {
-                            onToast(R.string.error_login_refresh);
-                            onSetupFinished(false);
+                            onToast(R.string.error_login_refresh)
+                            onSetupFinished(false)
                         }
                     }
                     if (refreshKey == "") {
@@ -109,23 +109,10 @@ class Welcome: BaseActivity<ActivityWelcomeBinding>(), UpdateModule.Callback {
 
 
     private fun onSetupFinished(is_login: Boolean) {
-        val permissions = intArrayOf( //                ContextCompat.checkSelfPermission(Welcome.this, Manifest.permission.READ_PHONE_STATE),
-                ContextCompat.checkSelfPermission(this@Welcome, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-        )
-        var isAllowed = true
-        for (permission in permissions) {
-            isAllowed = isAllowed && permission == PackageManager.PERMISSION_GRANTED
-        }
-        if (!isAllowed) {
-            activityIntent = Intent(this@Welcome, Login::class.java)
-            activityIntent.putExtra("grand", 0)
+        activityIntent = if (is_login) {
+            Intent(this@Welcome, Main::class.java)
         } else {
-            if (is_login) {
-                activityIntent = Intent(this@Welcome, Main::class.java)
-            } else {
-                activityIntent = Intent(this@Welcome, Login::class.java)
-                activityIntent.putExtra("grand", 1)
-            }
+            Intent(this@Welcome, Login::class.java)
         }
         val helper = UpdateModule(this@Welcome)
         helper.getUpdate(0, this)
@@ -200,4 +187,6 @@ class Welcome: BaseActivity<ActivityWelcomeBinding>(), UpdateModule.Callback {
         builder.setPositiveButton(R.string.text_ok) { _, _ -> ActivityCollector.finishAll() }
         runOnUiThread { builder.show() }
     }
+
+    override fun isActivityAtBottom(): Boolean = true
 }

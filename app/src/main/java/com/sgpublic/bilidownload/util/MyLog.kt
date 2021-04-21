@@ -78,12 +78,12 @@ object MyLog {
         }, message)
     }
 
-    fun e(message: Any, e: Throwable) {
+    fun e(msg: Any, e: Throwable) {
         doLog(object : DoLog {
             override fun onLog(tag: String, message: String, e: Throwable) {
-                Log.e(tag, message)
+                Log.e(tag, msg.toString(), e)
             }
-        }, message, e)
+        }, msg, e)
     }
 
     private fun doLog(doLog: DoLogSimplify, message: Any) {

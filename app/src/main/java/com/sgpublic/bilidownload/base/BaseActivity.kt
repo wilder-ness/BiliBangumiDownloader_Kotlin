@@ -10,6 +10,7 @@ import androidx.annotation.StringRes
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.viewbinding.ViewBinding
+import com.sgpublic.bilidownload.R
 import com.sgpublic.bilidownload.util.ActivityCollector
 import com.yanzhenjie.sofia.Sofia
 import me.imid.swipebacklayout.lib.SwipeBackLayout
@@ -32,7 +33,7 @@ abstract class BaseActivity<T : ViewBinding>: SwipeBackActivity() {
         swipeBackLayout.setEdgeTrackingEnabled(SwipeBackLayout.EDGE_LEFT)
         swipeBackLayout.setEdgeSize(edgeSize)
 
-        getContentView()
+        setupContentView()
         onViewSetup()
         onActivityCreated(savedInstanceState)
     }
@@ -40,7 +41,7 @@ abstract class BaseActivity<T : ViewBinding>: SwipeBackActivity() {
     protected abstract fun onActivityCreated(savedInstanceState: Bundle?)
 
     @Suppress("UNCHECKED_CAST")
-    private fun getContentView() {
+    private fun setupContentView() {
         val parameterizedType: ParameterizedType = javaClass.genericSuperclass as ParameterizedType
         val clazz = parameterizedType.actualTypeArguments[0] as Class<T>
         val method = clazz.getMethod("inflate", LayoutInflater::class.java)
@@ -136,6 +137,28 @@ abstract class BaseActivity<T : ViewBinding>: SwipeBackActivity() {
                         callback?.run()
                     }
                 }, duration.toLong())
+            }
+        }
+    }
+
+    protected open fun isActivityAtBottom(): Boolean = false
+
+    var last: Long = -1
+    override fun onBackPressed() {
+        if (!isActivityAtBottom()){
+            super.onBackPressed()
+            return
+        }
+        val now = System.currentTimeMillis()
+        if (last == -1L) {
+            onToast(R.string.text_back_exit)
+            last = now
+        } else {
+            if (now - last < 2000) {
+                ActivityCollector.finishAll()
+            } else {
+                last = now
+                onToast(R.string.text_back_exit_notice)
             }
         }
     }

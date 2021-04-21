@@ -2,7 +2,6 @@ package com.sgpublic.bilidownload.util
 
 import android.app.Activity
 import java.util.*
-import kotlin.system.exitProcess
 
 object ActivityCollector {
     private val activities = ArrayList<Activity>()
@@ -15,13 +14,12 @@ object ActivityCollector {
         activities.remove(activity)
     }
 
-    fun finishAll(){
+    fun finishAll() {
         for (activity in activities){
             if (!activity.isFinishing){
                 activity.finish()
             }
         }
         activities.clear()
-        exitProcess(0)
     }
 }

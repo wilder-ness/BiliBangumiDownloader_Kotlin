@@ -4,6 +4,9 @@
     <string name="title_bangumi">番剧</string>
     <string name="title_mine">我的</string>
 
+    <string name="text_back_exit">再点击一次退出</string>
+    <string name="text_back_exit_notice">请再点击一次退出</string>
+
     <string name="title_login_welcome">欢迎使用哔哩番剧</string>
     <string name="text_login_welcome">请使用哔哩哔哩账号登录</string>
     <string name="text_login_statement">哔哩番剧不保存您的账号密码，请放心登录。</string>

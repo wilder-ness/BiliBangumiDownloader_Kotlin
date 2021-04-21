@@ -12,6 +12,7 @@ import org.json.JSONObject
 import java.io.IOException
 import java.net.UnknownHostException
 import java.util.*
+import kotlin.collections.ArrayList
 
 class FollowsModule(private val context: Context, access_key: String) {
     private lateinit var callbackPrivate: Callback
@@ -42,16 +43,12 @@ class FollowsModule(private val context: Context, access_key: String) {
                         json = json.getJSONObject("result")
                         val hasNext = json.getInt("has_next")
                         val total = json.getInt("total")
-                        val followDataArray: Array<FollowData?>
-                        if (total == 0) {
-                            followDataArray = arrayOfNulls(0)
-                        } else {
+                        val followDataArray = ArrayList<FollowData>()
+                        if (total > 0) {
                             val array = json.getJSONArray("follow_list")
                             val totalPage = array.length()
-                            followDataArray = arrayOfNulls(totalPage)
-                            for (follow_list_index in 0 until totalPage) {
-                                json = array.getJSONObject(follow_list_index)
-                                MyLog.v(json)
+                            for (followListIndex in 0 until totalPage) {
+                                json = array.getJSONObject(followListIndex)
                                 val followData = FollowData()
                                 followData.season_id = json.getLong("season_id")
                                 followData.title = json.getString("title")
@@ -71,7 +68,7 @@ class FollowsModule(private val context: Context, access_key: String) {
                                 followData.new_ep_is_new = json.getInt("is_new")
                                 followData.new_ep_index_show = json.getString("index_show")
                                 followData.new_ep_cover = json.getString("cover")
-                                followDataArray[follow_list_index] = followData
+                                followDataArray.add(followData)
                             }
                         }
                         callbackPrivate.onResult(followDataArray, hasNext)
@@ -87,6 +84,6 @@ class FollowsModule(private val context: Context, access_key: String) {
 
     interface Callback {
         fun onFailure(code: Int, message: String?, e: Throwable?)
-        fun onResult(followData: Array<FollowData?>?, has_next: Int)
+        fun onResult(followData: ArrayList<FollowData>, has_next: Int)
     }
 }

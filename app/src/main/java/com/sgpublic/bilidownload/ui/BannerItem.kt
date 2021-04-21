@@ -1,9 +1,9 @@
 package com.sgpublic.bilidownload.ui
 
-import android.content.Context
+import androidx.appcompat.app.AppCompatActivity
 
 class BannerItem(
-        val context: Context,
+        val context: AppCompatActivity,
         val bannerPath: String,
         val seasonCover: String,
         val seasonId: Long,

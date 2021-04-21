@@ -74,6 +74,9 @@ class SeasonBannerAdapter : ViewHolder<BannerItem> {
                             bannerImagePlaceholder.animate().alpha(0f).setDuration(400).setListener(null)
                             Timer().schedule(object : TimerTask(){
                                 override fun run() {
+                                    data.context.run {
+
+                                    }
                                     bannerImage.visibility = View.VISIBLE
                                     bannerImage.animate().alpha(1f).setDuration(400).setListener(null)
                                 }
@@ -99,8 +102,10 @@ class SeasonBannerAdapter : ViewHolder<BannerItem> {
                             bannerImagePlaceholder.animate().alpha(0f).setDuration(400).setListener(null)
                             Timer().schedule(object : TimerTask(){
                                 override fun run() {
-                                    bannerImage.visibility = View.VISIBLE
-                                    bannerImage.animate().alpha(1f).setDuration(400).setListener(null)
+                                    data.context.runOnUiThread {
+                                        bannerImage.visibility = View.VISIBLE
+                                        bannerImage.animate().alpha(1f).setDuration(400).setListener(null)
+                                    }
                                 }
                             }, 400)
                             return false
