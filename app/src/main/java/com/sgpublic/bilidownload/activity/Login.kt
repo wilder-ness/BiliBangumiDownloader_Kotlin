@@ -7,7 +7,6 @@ import androidx.core.widget.addTextChangedListener
 import com.sgpublic.bilidownload.R
 import com.sgpublic.bilidownload.base.BaseActivity
 import com.sgpublic.bilidownload.databinding.ActivityLoginBinding
-import com.sgpublic.bilidownload.dialog.Catcher
 import com.sgpublic.bilidownload.manager.ConfigManager
 
 class Login: BaseActivity<ActivityLoginBinding>() {
@@ -45,8 +44,10 @@ class Login: BaseActivity<ActivityLoginBinding>() {
             binding.loginBannerRight.setImageResource(images[1])
         }
         binding.loginInWeb.setOnClickListener {
-            Catcher.startActivity(this@Login, "logContent")
-//            LoginWeb.startActivity(this@Login)
+            LoginWeb.startActivity(this@Login)
+        }
+        binding.loginAction.setOnClickListener {
+            throw NullPointerException("阿巴阿巴")
         }
     }
 

@@ -9,7 +9,7 @@ import com.sgpublic.bilidownload.databinding.ActivityLoginWebBinding
 class LoginWeb: BaseActivity<ActivityLoginWebBinding>() {
     companion object {
         fun startActivity(packageContext: Context){
-            val intent = Intent(packageContext, this::class.java)
+            val intent = Intent(packageContext, LoginWeb::class.java)
             packageContext.startActivity(intent)
         }
     }

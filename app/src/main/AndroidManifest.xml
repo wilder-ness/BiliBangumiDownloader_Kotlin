@@ -35,8 +35,6 @@
         <activity android:name=".activity.OtherFollows" />
         <activity android:name=".activity.Season" />
         <activity android:name=".activity.Download"/>
-        <activity android:name=".dialog.Catcher"
-            android:theme="@style/DialogStyle" />
         <activity
             android:name=".activity.Main"
             android:launchMode="singleTop" />
