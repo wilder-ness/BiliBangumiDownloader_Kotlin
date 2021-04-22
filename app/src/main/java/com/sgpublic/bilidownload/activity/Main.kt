@@ -32,10 +32,12 @@ class Main: BaseActivity<ActivityMainBinding>() {
     }
 
     private fun selectNavigation(index: Int){
-        if (index != 0){
-            supportFragmentManager.findFragmentById(R.id.main_fragment_bangumi)?.onPause()
-        } else {
-            supportFragmentManager.findFragmentById(R.id.main_fragment_mine)?.onResume()
+        supportFragmentManager.findFragmentById(R.id.main_fragment_bangumi)?.let {
+            if (index != 0){
+                it.onPause()
+            } else {
+                it.onResume()
+            }
         }
         binding.navBangumiImage.setColorFilter(getSelectedColor(index == 0))
         binding.navBangumiTitle.setTextColor(getSelectedColor(index == 0))
@@ -74,6 +76,16 @@ class Main: BaseActivity<ActivityMainBinding>() {
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(id, fragment)
         transaction.commit()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        binding.navView.setFPS(-1)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        binding.navView.setFPS(60)
     }
 
     override fun isActivityAtBottom(): Boolean = true

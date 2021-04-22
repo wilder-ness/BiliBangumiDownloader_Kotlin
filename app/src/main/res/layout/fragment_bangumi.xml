@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:fitsSystemWindows="true">
-
+    android:orientation="vertical">
     <androidx.cardview.widget.CardView
+        android:id="@+id/bangumi_search_base"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginTop="10dp"
@@ -17,7 +16,6 @@
         android:padding="10dp"
         app:cardCornerRadius="25dp"
         app:cardElevation="2dp">
-
         <ImageView
             android:layout_width="20dp"
             android:layout_height="20dp"
@@ -26,7 +24,6 @@
             android:layout_marginStart="20dp"
             android:layout_gravity="center_vertical"
             tools:ignore="ContentDescription" />
-
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -39,38 +36,33 @@
             android:gravity="center_vertical"
             android:background="@null"
             tools:ignore="Autofill,TextFields" />
-
         <View
             android:id="@+id/bangumi_search"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="?android:attr/selectableItemBackground" />
     </androidx.cardview.widget.CardView>
-
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/bangumi_refresh"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
-        android:paddingTop="3dp">
-
+        android:layout_height="wrap_content">
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
             <com.sgpublic.bilidownload.widget.ObservableScrollView
                 android:id="@+id/bangumi_base"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:visibility="invisible"
                 android:scrollbars="none"
                 android:overScrollMode="never">
-
                 <LinearLayout
                     android:id="@+id/bangumi_placeholder"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
+                    android:orientation="vertical"
+                    android:paddingTop="70dp"
+                    android:paddingBottom="56dp">
                     <com.zhpan.bannerview.BannerViewPager
                         android:id="@+id/bangumi_banner"
                         android:layout_width="match_parent"
@@ -82,14 +74,12 @@
                         app:bvp_page_style="multi_page_overlap"
                         app:bvp_reveal_width="55dp"
                         app:bvp_scroll_duration="1000" />
-
                     <GridLayout
                         android:id="@+id/bangumi_follows"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="10dp" />
-
                     <ImageView
                         android:id="@+id/bangumi_follow_end"
                         android:layout_width="match_parent"
@@ -98,14 +88,14 @@
                         tools:ignore="ContentDescription" />
                 </LinearLayout>
             </com.sgpublic.bilidownload.widget.ObservableScrollView>
-
             <ImageView
                 android:id="@+id/bangumi_load_state"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
-                android:layout_marginTop="80dp"
+                android:layout_marginTop="130dp"
                 android:scaleType="fitCenter"
-                android:src="@drawable/pic_load_failed" />
+                android:src="@drawable/pic_load_failed"
+                tools:ignore="ContentDescription" />
         </FrameLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-</LinearLayout>
+</FrameLayout>

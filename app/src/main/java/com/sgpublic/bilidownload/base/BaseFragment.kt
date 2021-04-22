@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.annotation.IdRes
@@ -60,7 +61,11 @@ abstract class BaseFragment<T: ViewBinding>(private val contest: AppCompatActivi
         if (resourceId > 0) {
             statusbarheight = resources.getDimensionPixelSize(resourceId)
         }
-        val params: LinearLayout.LayoutParams = view.layoutParams as LinearLayout.LayoutParams
+        val params = try {
+            view.layoutParams as LinearLayout.LayoutParams
+        } catch (e: ClassCastException) {
+            view.layoutParams as FrameLayout.LayoutParams
+        }
         params.topMargin = statusbarheight
     }
 
@@ -75,7 +80,7 @@ abstract class BaseFragment<T: ViewBinding>(private val contest: AppCompatActivi
     protected open fun onViewSetup(){ }
 
     protected fun onToast(content: String?) {
-        activity?.runOnUiThread {
+        runOnUiThread {
             Toast.makeText(contest, content, Toast.LENGTH_SHORT).show()
         }
     }

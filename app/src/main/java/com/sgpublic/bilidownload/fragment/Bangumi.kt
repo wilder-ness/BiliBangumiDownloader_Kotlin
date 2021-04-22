@@ -15,6 +15,7 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.sgpublic.bilidownload.R
+import com.sgpublic.bilidownload.activity.Search
 import com.sgpublic.bilidownload.activity.Season
 import com.sgpublic.bilidownload.base.BaseFragment
 import com.sgpublic.bilidownload.base.CrashHandler
@@ -33,9 +34,24 @@ import kotlin.collections.ArrayList
 
 class Bangumi(private val context: AppCompatActivity): BaseFragment<FragmentBangumiBinding>(context) {
     override fun onFragmentCreated(savedInstanceState: Bundle?) {
-        binding.bangumiBase.visibility = View.INVISIBLE
         startOnLoadingState(binding.bangumiLoadState)
         getFollowData(1)
+    }
+
+    override fun onViewSetup() {
+        super.onViewSetup()
+        initViewAtTop(binding.bangumiSearchBase)
+        initViewAtTop(binding.bangumiBanner)
+        binding.bangumiSearch.setOnClickListener {
+            Search.startActivity(context)
+        }
+        binding.bangumiRefresh.setOnRefreshListener {
+            Timer().schedule(object : TimerTask(){
+                override fun run() {
+                    getFollowData(1)
+                }
+            }, 1000)
+        }
     }
 
     private fun getFollowData(pageIndex: Int) {
@@ -90,7 +106,16 @@ class Bangumi(private val context: AppCompatActivity): BaseFragment<FragmentBang
                     badgeColor1
                 }
                 bannerInfoList.add(
-                    BannerItem(context, newEpCover, cover, seasonId, title, newEpIndexShow, badge, badgeColor)
+                    BannerItem(
+                        context,
+                        newEpCover,
+                        cover,
+                        seasonId,
+                        title,
+                        newEpIndexShow,
+                        badge,
+                        badgeColor
+                    )
                 )
                 if (bannerInfoList.size > 7) {
                     break
@@ -114,9 +139,18 @@ class Bangumi(private val context: AppCompatActivity): BaseFragment<FragmentBang
                     } else {
                         badgeColor1
                     }
-                    bannerInfoList.add(BannerItem(
-                        context, newEpCover, cover, seasonId, title, newEpIndexShow, badge, badgeColor
-                    ))
+                    bannerInfoList.add(
+                        BannerItem(
+                            context,
+                            newEpCover,
+                            cover,
+                            seasonId,
+                            title,
+                            newEpIndexShow,
+                            badge,
+                            badgeColor
+                        )
+                    )
                 }
             }
         }
@@ -150,9 +184,8 @@ class Bangumi(private val context: AppCompatActivity): BaseFragment<FragmentBang
         } else {
             startOnLoadingState(binding.bangumiFollowEnd)
         }
-        val listRowAdd = data_array.size.toFloat() / 3
-        var rowCount = listRowAdd.toInt()
-        if (listRowAdd * 3 != data_array.size.toFloat()) {
+        var rowCount = data_array.size / 3
+        if (data_array.size % 3 != 0) {
             rowCount += 1
         }
         val listRowSizeOld = listRowSize
@@ -235,7 +268,13 @@ class Bangumi(private val context: AppCompatActivity): BaseFragment<FragmentBang
             dataInfoIndex += 1
         }
         binding.bangumiBase.setScrollViewListener(object : ScrollViewListener {
-            override fun onScrollChanged(scrollView: ObservableScrollView?, x: Int, y: Int, oldx: Int, oldy: Int) {
+            override fun onScrollChanged(
+                scrollView: ObservableScrollView?,
+                x: Int,
+                y: Int,
+                oldx: Int,
+                oldy: Int
+            ) {
                 if (binding.bangumiPlaceholder.height > y + binding.bangumiBase.height) {
                     scrollToEnd = false
                 } else if (!scrollToEnd) {
@@ -246,6 +285,16 @@ class Bangumi(private val context: AppCompatActivity): BaseFragment<FragmentBang
                 }
             }
         })
+    }
+
+    override fun onPause() {
+        super.onPause()
+        binding.bangumiBanner.stopLoop()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        binding.bangumiBanner.startLoop()
     }
 
     private var timer: Timer? = null

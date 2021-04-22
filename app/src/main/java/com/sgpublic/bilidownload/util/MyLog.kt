@@ -81,7 +81,7 @@ object MyLog {
     fun e(msg: Any, e: Throwable) {
         doLog(object : DoLog {
             override fun onLog(tag: String, message: String, e: Throwable) {
-                Log.e(tag, msg.toString(), e)
+                Log.e("MyLog", msg.toString(), e)
             }
         }, msg, e)
     }

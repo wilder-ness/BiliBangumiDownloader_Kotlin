@@ -1,5 +1,6 @@
 package com.sgpublic.bilidownload.activity
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -114,6 +115,13 @@ class Login: BaseActivity<ActivityLoginBinding>() {
         }
         binding.loginAction.setOnClickListener {
             onLoginAction()
+        }
+    }
+
+    companion object {
+        fun startActivity(context: Context){
+            val intent = Intent(context, Login::class.java)
+            context.startActivity(intent)
         }
     }
 

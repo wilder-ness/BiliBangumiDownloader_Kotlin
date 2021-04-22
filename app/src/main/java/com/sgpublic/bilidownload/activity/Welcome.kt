@@ -33,7 +33,7 @@ class Welcome: BaseActivity<ActivityWelcomeBinding>(), UpdateModule.Callback {
                 if (ConfigManager.getInt("quality", -1) == -1) {
                     ConfigManager.putInt("quality", 80)
                 }
-                ConfigManager.checkClient(this@Welcome)
+                ConfigManager.checkClient()
 
                 if (!ConfigManager.getBoolean("is_login")) {
                     Timer().schedule(object : TimerTask() {
