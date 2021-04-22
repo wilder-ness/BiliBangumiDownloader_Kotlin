@@ -70,7 +70,8 @@ class FlowLayout @JvmOverloads constructor(context: Context?, attrs: AttributeSe
     }
 
     inner class ViewHolder(var mConvertView: View) {
-        fun <T : View?> getView(viewId: Int): T? {
+        @Suppress("UNCHECKED_CAST")
+        fun <T: View?> getView(viewId: Int): T? {
             var view = mViews!![viewId]
             if (view == null) {
                 view = mConvertView.findViewById(viewId)

@@ -1,15 +1,12 @@
 package com.sgpublic.bilidownload.activity
 
-import android.Manifest
 import android.app.AlertDialog
 import android.app.DownloadManager
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.view.View
-import androidx.core.content.ContextCompat
 import com.sgpublic.bilidownload.R
 import com.sgpublic.bilidownload.base.BaseActivity
 import com.sgpublic.bilidownload.base.CrashHandler
@@ -127,7 +124,7 @@ class Welcome: BaseActivity<ActivityWelcomeBinding>(), UpdateModule.Callback {
         runOnUiThread { this@Welcome.startActivity(activityIntent) }
     }
 
-    override fun onUpdate(force: Int, ver_name: String, size_string: String, changelog: String, dl_url: String) {
+    override fun onUpdate(force: Int, verName: String, sizeString: String, changelog: String, dlUrl: String) {
         val updateHeader = intArrayOf(
                 R.string.text_update_content,
                 R.string.text_update_content_force,
@@ -137,17 +134,17 @@ class Welcome: BaseActivity<ActivityWelcomeBinding>(), UpdateModule.Callback {
         builder.setTitle(R.string.title_update_get)
         builder.setCancelable(force == 0)
         var header = updateHeader[force]
-        if (ver_name.contains("Build")) {
+        if (verName.contains("Build")) {
             header = updateHeader[2]
         }
-        val message = String.format(this@Welcome.getString(header), size_string) +
+        val message = String.format(this@Welcome.getString(header), sizeString) +
                 this@Welcome.getString(R.string.text_update_version) +
-                ver_name + this@Welcome.getString(R.string.text_update_changelog) +
+                verName + this@Welcome.getString(R.string.text_update_changelog) +
                 changelog
         builder.setMessage(message)
         builder.setPositiveButton(R.string.text_ok) { _, _ ->
             Thread {
-                val url = Uri.parse(dl_url)
+                val url = Uri.parse(dlUrl)
                 val downloadManager = applicationContext.getSystemService(DOWNLOAD_SERVICE) as DownloadManager
                 val req = DownloadManager.Request(url)
                 req.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)

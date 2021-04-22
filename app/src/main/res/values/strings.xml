@@ -3,6 +3,7 @@
 
     <string name="title_bangumi">番剧</string>
     <string name="title_mine">我的</string>
+    <string name="text_version" translatable="false">V%1$s</string>
 
     <string name="text_back_exit">再点击一次退出</string>
     <string name="text_back_exit_notice">请再点击一次退出</string>
@@ -99,7 +100,10 @@
     <string name="title_about_update">检查更新</string>
     <string name="title_about_developer">开发者</string>
     <string name="title_about_pause">复制</string>
+    <string name="title_about_feedback">问题反馈</string>
     <string name="title_about_license">开源许可</string>
+    <string name="title_about_developer_dialog">鸣谢</string>
+    <string name="text_about_developer_dialog">(排名不分先后)\nAPP维护：\n忆丶距\n特别鸣谢：\n柠檬大仙</string>
 
     <string name="title_function_crash">应用意外退出</string>
     <string name="text_function_crash">非常抱歉，应用受不可抗力意外退出，您可以选择复制错误信息反馈给开发者。</string>

@@ -108,7 +108,7 @@ class ConfigManager {
         }
 
         fun checkQuality(): QualityItem {
-            val qualitySet = getInt("quality", 112)
+            val qualitySet = getInt("quality", 80)
             var qualityIndex = 0
             for ((key, value) in QUALITIES) {
                 if (key == qualitySet) {
@@ -116,7 +116,7 @@ class ConfigManager {
                 }
                 qualityIndex++
             }
-            return QualityItem(QUALITIES[112]!!, 112, 2)
+            return QualityItem(QUALITIES[80]!!, 80, 2)
         }
 
         fun checkClient(): ClientItem {

@@ -29,7 +29,6 @@
         <activity android:name=".activity.License" />
         <activity android:name=".activity.Search" />
         <activity android:name=".activity.LoginWeb" />
-        <activity android:name=".activity.Explore" />
         <activity android:name=".activity.Setting" />
         <activity android:name=".activity.About" />
         <activity android:name=".activity.OtherFollows" />

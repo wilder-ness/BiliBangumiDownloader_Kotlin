@@ -291,12 +291,12 @@ class BaseAPI(private val accessToken: String) {
             val body = GetArgs(argArray)
             val bodyString = body.getString(withSign)
             if (method == METHOD_POST) {
-                MyLog.v("HTTP请求：POST $url, [Body]$bodyString")
+                MyLog.v("HTTP请求\nPOST $url\n[Body] $bodyString")
                 url(url)
                 post(body.getForm(withSign))
             } else {
                 val urlFinal = "$url?$bodyString"
-                MyLog.v("HTTP请求：GET $urlFinal")
+                MyLog.v("HTTP请求\nGET $urlFinal")
                 url(urlFinal)
             }
             if (headerArray != null) {
@@ -306,6 +306,7 @@ class BaseAPI(private val accessToken: String) {
             }
             build()
         }
+
         return client.newCall(request)
     }
 

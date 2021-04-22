@@ -51,9 +51,9 @@ class Setting: BaseActivity<ActivitySettingBinding>() {
     override fun onViewSetup() {
         super.onViewSetup()
         setSupportActionBar(binding.settingToolbar)
-        supportActionBar?.let {
-            it.setDisplayHomeAsUpEnabled(true)
-            it.setTitle(R.string.title_mine_setting)
+        supportActionBar?.run {
+            setDisplayHomeAsUpEnabled(true)
+            setTitle(R.string.title_mine_setting)
         }
 
         binding.settingTaskCount.setOnClickListener {

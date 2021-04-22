@@ -136,7 +136,7 @@ class UpdateModule(private val context: Context) {
     interface Callback {
         fun onFailure(code: Int, message: String?, e: Throwable)
         fun onUpToDate()
-        fun onUpdate(force: Int, ver_name: String, size_string: String, changelog: String, dl_url: String)
+        fun onUpdate(force: Int, verName: String, sizeString: String, changelog: String, dlUrl: String)
         fun onDisabled(time: Long, reason: String)
     }
 }

@@ -81,7 +81,7 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.2'
     implementation 'com.wonderkiln:blurkit:1.0.0'
     implementation 'com.yanzhenjie:sofia:1.0.5'
-    implementation 'de.hdodenhof:circleimageview:3.1.0'
+    implementation "com.ogaclejapan.smarttablayout:library:2.0.0@aar"
     implementation "com.github.ssseasonnn:RxDownload:1.0.9"
     implementation 'me.imid.swipebacklayout.lib:library:1.1.0'
     implementation 'com.github.kongzue.dialogx:DialogX:0.0.33'
