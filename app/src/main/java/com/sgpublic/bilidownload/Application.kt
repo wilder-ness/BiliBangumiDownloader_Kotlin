@@ -6,6 +6,7 @@ import com.kongzue.dialogx.style.MIUIStyle
 import com.sgpublic.bilidownload.base.CrashHandler
 import com.sgpublic.bilidownload.manager.ConfigManager
 import com.sgpublic.bilidownload.util.MyLog
+import com.sgpublic.blurfixandroidx.BlurKit
 
 @Suppress("unused")
 class Application : Application() {
@@ -14,6 +15,7 @@ class Application : Application() {
         MyLog.v("APP启动")
         CrashHandler.init(this)
         ConfigManager.init(this)
+//        BlurKit.init(this)
         DialogX.init(this)
         DialogX.globalStyle = MIUIStyle.style()
     }

@@ -7,32 +7,27 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.annotation.StringRes
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.viewbinding.ViewBinding
 import com.sgpublic.bilidownload.R
 import com.sgpublic.bilidownload.util.ActivityCollector
+import com.sgpublic.swipebacklayoutx.app.SwipeBackActivity
 import com.yanzhenjie.sofia.Sofia
-import me.imid.swipebacklayout.lib.SwipeBackLayout
-import me.imid.swipebacklayout.lib.app.SwipeBackActivity
 import java.lang.reflect.ParameterizedType
 import java.util.*
+
 
 abstract class BaseActivity<T : ViewBinding>: SwipeBackActivity() {
     protected lateinit var binding: T
 
     private val edgeSize: Int = 200
-    protected var rootViewBottom: Int = 0
+    private var rootViewBottom: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         ActivityCollector.addActivity(this)
-
-        setSwipeBackEnable(onSetSwipeBackEnable())
-        swipeBackLayout.setEdgeTrackingEnabled(SwipeBackLayout.EDGE_LEFT)
-        swipeBackLayout.setEdgeSize(edgeSize)
 
         setupContentView()
         onViewSetup()
@@ -50,7 +45,7 @@ abstract class BaseActivity<T : ViewBinding>: SwipeBackActivity() {
         setContentView(binding.root)
     }
 
-    protected open fun onSetSwipeBackEnable(): Boolean = false
+    protected open fun onSetSwipeBackEnable(): Boolean = true
 
     protected open fun initViewAtTop(view: View){
         var statusbarheight = 0

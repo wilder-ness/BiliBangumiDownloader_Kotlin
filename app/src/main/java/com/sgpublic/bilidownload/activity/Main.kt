@@ -80,12 +80,12 @@ class Main: BaseActivity<ActivityMainBinding>() {
 
     override fun onPause() {
         super.onPause()
-        binding.navView.setFPS(-1)
+//        binding.navView.setFPS(-1)
     }
 
     override fun onResume() {
         super.onResume()
-        binding.navView.setFPS(60)
+//        binding.navView.setFPS(60)
     }
 
     override fun isActivityAtBottom(): Boolean = true

@@ -79,11 +79,12 @@ dependencies {
     implementation 'jp.wasabeef:glide-transformations:4.3.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
     implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.2'
-    implementation 'com.wonderkiln:blurkit:1.0.0'
     implementation 'com.yanzhenjie:sofia:1.0.5'
+    implementation 'com.github.SGPublic:Blur-Fix-AndroidX:1.1.1'
+    implementation 'com.github.SGPublic:SwipeBackLayoutX:1.2.1'
     implementation "com.ogaclejapan.smarttablayout:library:2.0.0@aar"
     implementation "com.github.ssseasonnn:RxDownload:1.0.9"
-    implementation 'me.imid.swipebacklayout.lib:library:1.1.0'
+    implementation 'com.wonderkiln:blurkit:1.0.0'
     implementation 'com.github.kongzue.dialogx:DialogX:0.0.33'
     implementation 'com.github.kongzue.dialogx:DialogXMIUIStyle:0.0.33'
 }

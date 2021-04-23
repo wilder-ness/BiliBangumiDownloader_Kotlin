@@ -32,10 +32,10 @@ class License: BaseActivity<ActivityLicenseBinding>() {
                 "https://github.com/zhpanvip/BannerViewPager"
         ))
         arrayList.add(LicenseListItem(
-                "BlurKit-Fix",
-                "A fix for blur kit that lets the consumer specify a view in the view heirarchy to blur.",
-                "ThomasCookDeveloperInfo",
-                "https://github.com/ThomasCookDeveloperInfo/BlurKit-Fix"
+                "Blur-Fix-AndroidX",
+                "Fork from https://github.com/ThomasCookDeveloperInfo/BlurKit-Fix, add AndroidX support, move to JitPack.",
+                "SGPublic",
+                "https://github.com/SGPublic/Blur-Fix-AndroidX"
         ))
         arrayList.add(LicenseListItem(
                 "DialogX",
@@ -74,10 +74,10 @@ class License: BaseActivity<ActivityLicenseBinding>() {
                 "https://github.com/ogaclejapan/SmartTabLayout"
         ))
         arrayList.add(LicenseListItem(
-                "SwipeBackLayout",
-                "An Android library that help you to build app with swipe back gesture.",
-                "ikew0ng",
-                "https://github.com/ikew0ng/SwipeBackLayout"
+                "SwipeBackLayoutX",
+                "Fork from https://github.com/ikew0ng/SwipeBackLayout, add AndroidX support, move to JitPack.",
+                "SGPublic",
+                "https://github.com/SGPublic/SwipeBackLayoutX"
         ))
         binding.licenseList.adapter = LicenseListAdapter(this@License, arrayList)
     }
