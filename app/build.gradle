@@ -84,7 +84,6 @@ dependencies {
     implementation 'com.github.SGPublic:SwipeBackLayoutX:1.2.1'
     implementation "com.ogaclejapan.smarttablayout:library:2.0.0@aar"
     implementation "com.github.ssseasonnn:RxDownload:1.0.9"
-    implementation 'com.wonderkiln:blurkit:1.0.0'
     implementation 'com.github.kongzue.dialogx:DialogX:0.0.33'
     implementation 'com.github.kongzue.dialogx:DialogXMIUIStyle:0.0.33'
 }
