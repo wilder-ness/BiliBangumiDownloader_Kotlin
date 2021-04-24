@@ -102,9 +102,9 @@ class LoginModule(private val context: Context) {
                         if (json.getInt("status") == 0) {
                             json = json.getJSONObject("token_info")
                             val token = TokenData()
-                            token.access_token = json.getString("access_token")
-                            token.refresh_token = json.getString("refresh_token")
-                            token.expires_in = json.getLong("expires_in") * 1000L + BaseAPI.ts.toLong()
+                            token.accessToken = json.getString("access_token")
+                            token.refreshToken = json.getString("refresh_token")
+                            token.expiresIn = json.getLong("expires_in") * 1000L + BaseAPI.ts.toLong()
                             callbackPrivate.onResult(token, json.getLong("mid"))
                         } else if (json.getInt("status") == 3 || json.getInt("status") == 2) {
                             callbackPrivate.onLimited()
@@ -174,9 +174,9 @@ class LoginModule(private val context: Context) {
                         val accessKey = urlSplit[0].substring(40)
                         val mid = urlSplit[1].substring(4).toLong()
                         val token = TokenData()
-                        token.access_token = accessKey
-                        token.refresh_token = ""
-                        token.expires_in = 2592000000L + BaseAPI.ts.toLong()
+                        token.accessToken = accessKey
+                        token.refreshToken = ""
+                        token.expiresIn = 2592000000L + BaseAPI.ts.toLong()
                         callbackPrivate.onResult(token, mid)
                     } else {
                         callbackPrivate.onFailure(-144, null, null)
@@ -210,9 +210,9 @@ class LoginModule(private val context: Context) {
                     if (json.getInt("code") == 0) {
                         json = json.getJSONObject("data")
                         val token = TokenData()
-                        token.access_token = json.getString("access_token")
-                        token.refresh_token = json.getString("refresh_token")
-                        token.expires_in =
+                        token.accessToken = json.getString("access_token")
+                        token.refreshToken = json.getString("refresh_token")
+                        token.expiresIn =
                             json.getLong("expires_in") * 1000L + BaseAPI.ts
                                 .toLong()
                         callbackPrivate.onResult(token, json.getLong("mid"))

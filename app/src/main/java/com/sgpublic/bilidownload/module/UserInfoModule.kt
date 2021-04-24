@@ -9,7 +9,6 @@ import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
 import java.net.UnknownHostException
-import java.util.*
 
 class UserInfoModule(private val context: Context, accessKey: String, mid: Long) {
     private val mid: String = mid.toString()
@@ -52,9 +51,9 @@ class UserInfoModule(private val context: Context, accessKey: String, mid: Long)
                         data.sign = json.getString("sign")
 
                         json = json.getJSONObject("vip")
-                        data.vip_label = json.getJSONObject("label").getString("text")
-                        data.vip_type = json.getInt("type")
-                        data.vip_state = json.getInt("status")
+                        data.vipLabel = json.getJSONObject("label").getString("text")
+                        data.vipType = json.getInt("type")
+                        data.vipState = json.getInt("status")
 
                         callbackPrivate.onResult(data)
                     } else {

@@ -6,7 +6,7 @@ data class UserData (
         var face: String = "",
         var sign: String = "",
         var level: Int = 0,
-        var vip_label: String = "",
-        var vip_type: Int = 0,
-        var vip_state: Int = 0
+        var vipLabel: String = "",
+        var vipType: Int = 0,
+        var vipState: Int = 0
 )

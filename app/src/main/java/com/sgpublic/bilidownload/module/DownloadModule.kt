@@ -2,9 +2,9 @@ package com.sgpublic.bilidownload.module
 
 import android.content.Context
 import com.sgpublic.bilidownload.R
-import com.sgpublic.bilidownload.data.Episode.DownloadData
-import com.sgpublic.bilidownload.data.Episode.InfoData.Companion.PAYMENT_NORMAL
-import com.sgpublic.bilidownload.data.Episode.TaskData
+import com.sgpublic.bilidownload.data.episode.DownloadData
+import com.sgpublic.bilidownload.data.episode.InfoData.Companion.PAYMENT_NORMAL
+import com.sgpublic.bilidownload.data.episode.TaskData
 import com.sgpublic.bilidownload.manager.ConfigManager
 import com.sgpublic.bilidownload.manager.DownloadTaskManager
 import org.json.JSONArray
@@ -143,7 +143,7 @@ class DownloadModule(private val context: Context) {
     @Throws(JSONException::class)
     private fun getDASHData(json: JSONObject, qn: Int) {
         val downloadData = DownloadData.DASHDownloadData()
-        downloadData.time_length = json.getLong("timelength")
+        downloadData.timeLength = json.getLong("timelength")
         val privateObject: JSONObject = json.getJSONObject("dash")
         var array: JSONArray = privateObject.getJSONArray("video")
         var objectVideo: JSONObject? = null
@@ -156,14 +156,14 @@ class DownloadModule(private val context: Context) {
             }
         }
         if (objectVideo != null) {
-            downloadData.video_url = objectVideo.getString("base_url")
-            downloadData.video_bandwidth = objectVideo.getLong("bandwidth")
-            downloadData.video_codecid =
+            downloadData.videoUrl = objectVideo.getString("base_url")
+            downloadData.videoBandwidth = objectVideo.getLong("bandwidth")
+            downloadData.videoCodecid =
                 if (objectVideo.isNull("codecid")) 0 else objectVideo.getInt("codecid")
-            downloadData.video_id = objectVideo.getInt("id")
-            downloadData.video_md5 =
+            downloadData.videoId = objectVideo.getInt("id")
+            downloadData.videoMd5 =
                 if (objectVideo.isNull("md5")) "" else objectVideo.getString("md5")
-            downloadData.video_size = DownloadTaskManager.getSizeLong(downloadData.video_url)
+            downloadData.videoSize = DownloadTaskManager.getSizeLong(downloadData.videoUrl)
         }
         array = privateObject.getJSONArray("audio")
         var objectAudio: JSONObject? = null
@@ -176,18 +176,18 @@ class DownloadModule(private val context: Context) {
             }
         }
         if (objectAudio != null) {
-            downloadData.audio_url = objectAudio.getString("base_url")
-            downloadData.audio_bandwidth = objectAudio.getLong("bandwidth")
-            downloadData.audio_codecid =
+            downloadData.audioUrl = objectAudio.getString("base_url")
+            downloadData.audioBandwidth = objectAudio.getLong("bandwidth")
+            downloadData.audioCodecid =
                 if (objectAudio.isNull("codecid")) 0 else objectAudio.getInt("codecid")
-            downloadData.audio_id = objectAudio.getInt("id")
-            downloadData.audio_md5 =
+            downloadData.audioId = objectAudio.getInt("id")
+            downloadData.audioMd5 =
                 if (objectAudio.isNull("md5")) "" else objectAudio.getString("md5")
-            downloadData.audio_size = DownloadTaskManager.getSizeLong(downloadData.audio_url)
+            downloadData.audioSize = DownloadTaskManager.getSizeLong(downloadData.audioUrl)
         }
         if (objectVideo != null && objectAudio != null) {
             this.downloadData.code = 0
-            downloadData.total_size = downloadData.audio_size + downloadData.video_size
+            downloadData.totalSize = downloadData.audioSize + downloadData.videoSize
             this.downloadData.data = downloadData
         } else {
             this.downloadData.code = -531

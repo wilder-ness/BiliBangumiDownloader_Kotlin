@@ -131,15 +131,15 @@ class SearchModule(private val context: Context) {
                             for (array_index in 0 until array.length()) {
                                 json = array.getJSONObject(array_index)
                                 val searchData = SearchData()
-                                searchData.angle_title = json.getString("angle_title")
-                                searchData.season_cover = "http:" + json.getString("cover")
+                                searchData.angleTitle = json.getString("angle_title")
+                                searchData.seasonCover = "http:" + json.getString("cover")
                                 if (json.isNull("media_score")) {
-                                    searchData.media_score = 0.0
+                                    searchData.mediaScore = 0.0
                                 } else {
-                                    searchData.media_score = json.getJSONObject("media_score")
+                                    searchData.mediaScore = json.getJSONObject("media_score")
                                         .getDouble("score")
                                 }
-                                searchData.season_id = json.getLong("season_id")
+                                searchData.seasonId = json.getLong("season_id")
                                 //searchData.season_title = object.getString("season_title");
                                 val season_title_string = json.getString("title")
                                 val season_title_spannable: Spannable = SpannableString(
@@ -159,16 +159,16 @@ class SearchModule(private val context: Context) {
                                         Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                                     )
                                 }
-                                searchData.season_title = season_title_spannable
+                                searchData.seasonTitle = season_title_spannable
                                 if (json.getLong("pubtime") * 1000 > System.currentTimeMillis()) {
-                                    searchData.selection_style = "grid"
+                                    searchData.selectionStyle = "grid"
                                 } else {
-                                    searchData.selection_style =
+                                    searchData.selectionStyle =
                                         json.getString("selection_style")
                                 }
                                 val date = Date(json.getLong("pubtime") * 1000)
                                 val format = SimpleDateFormat("yyyy", Locale.CHINA)
-                                searchData.season_content = """
+                                searchData.seasonContent = """
                                     ${format.format(date)}｜${json.getString("season_type_name")}｜${
                                     json.getString(
                                         "areas"
@@ -179,7 +179,7 @@ class SearchModule(private val context: Context) {
                                 var eps_array = json.getJSONArray("eps")
                                 if (eps_array.length() > 0) {
                                     json = eps_array.getJSONObject(0)
-                                    searchData.episode_cover = json.getString("cover")
+                                    searchData.episodeCover = json.getString("cover")
                                     val episode_title_string = json.getString("long_title")
                                     val episode_title_spannable: Spannable = SpannableString(
                                         episode_title_string
@@ -198,13 +198,13 @@ class SearchModule(private val context: Context) {
                                             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                                         )
                                     }
-                                    searchData.episode_title = episode_title_spannable
+                                    searchData.episodeTitle = episode_title_spannable
                                     eps_array = json.getJSONArray("badges")
                                     if (eps_array.length() > 0) {
                                         json = eps_array.getJSONObject(0)
-                                        searchData.episode_badges = json.getString("text")
+                                        searchData.episodeBadges = json.getString("text")
                                     } else {
-                                        searchData.episode_badges = ""
+                                        searchData.episodeBadges = ""
                                     }
                                 }
                                 searchDataList.add(searchData)

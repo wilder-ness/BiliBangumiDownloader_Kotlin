@@ -4,14 +4,12 @@ import android.content.Context
 import android.graphics.Color
 import com.sgpublic.bilidownload.R
 import com.sgpublic.bilidownload.data.FollowData
-import com.sgpublic.bilidownload.util.MyLog
 import okhttp3.Call
 import okhttp3.Response
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
 import java.net.UnknownHostException
-import java.util.*
 import kotlin.collections.ArrayList
 
 class FollowsModule(private val context: Context, access_key: String) {
@@ -50,24 +48,24 @@ class FollowsModule(private val context: Context, access_key: String) {
                             for (followListIndex in 0 until totalPage) {
                                 json = array.getJSONObject(followListIndex)
                                 val followData = FollowData()
-                                followData.season_id = json.getLong("season_id")
+                                followData.seasonId = json.getLong("season_id")
                                 followData.title = json.getString("title")
                                 followData.cover = json.getString("cover")
-                                followData.is_finish = json.getInt("is_finish")
+                                followData.isFinish = json.getInt("is_finish")
                                 val badge = json.getJSONObject("badge_info")
                                 followData.badge = badge.getString("text")
-                                followData.badge_color = Color.parseColor(
+                                followData.badgeColor = Color.parseColor(
                                     badge.getString("bg_color")
                                 )
-                                followData.badge_color_night = Color.parseColor(
+                                followData.badgeColorNight = Color.parseColor(
                                     badge.getString("bg_color_night")
                                 )
-                                followData.square_cover = json.getString("square_cover")
+                                followData.squareCover = json.getString("square_cover")
                                 json = json.getJSONObject("new_ep")
-                                followData.new_ep_id = json.getLong("id")
-                                followData.new_ep_is_new = json.getInt("is_new")
-                                followData.new_ep_index_show = json.getString("index_show")
-                                followData.new_ep_cover = json.getString("cover")
+                                followData.newEpId = json.getLong("id")
+                                followData.newEpIsNew = json.getInt("is_new")
+                                followData.newEpIndexShow = json.getString("index_show")
+                                followData.newEpCover = json.getString("cover")
                                 followDataArray.add(followData)
                             }
                         }

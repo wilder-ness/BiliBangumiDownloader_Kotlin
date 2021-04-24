@@ -64,10 +64,10 @@ class Welcome: BaseActivity<ActivityWelcomeBinding>(), UpdateModule.Callback {
                         }
 
                         override fun onResult(token: TokenData, mid: Long) {
-                            ConfigManager.putString("access_key", token.access_token)
-                            ConfigManager.putString("refresh_key", token.refresh_token)
+                            ConfigManager.putString("access_key", token.accessToken)
+                            ConfigManager.putString("refresh_key", token.refreshToken)
                             ConfigManager.putLong("mid", mid)
-                            ConfigManager.putLong("expires_in", token.expires_in)
+                            ConfigManager.putLong("expires_in", token.expiresIn)
                             refreshUserInfo()
                         }
                     })
@@ -98,9 +98,9 @@ class Welcome: BaseActivity<ActivityWelcomeBinding>(), UpdateModule.Callback {
                 ConfigManager.putString("sign", data.sign)
                 ConfigManager.putString("face", data.face)
                 ConfigManager.putInt("sex", data.sex)
-                ConfigManager.putString("vip_label", data.vip_label)
-                ConfigManager.putInt("vip_type", data.vip_type)
-                ConfigManager.putInt("vip_state", data.vip_state)
+                ConfigManager.putString("vip_label", data.vipLabel)
+                ConfigManager.putInt("vip_type", data.vipType)
+                ConfigManager.putInt("vip_state", data.vipState)
                 ConfigManager.putInt("level", data.level)
                 ConfigManager.putBoolean("is_login", true)
                 onSetupFinished(true)

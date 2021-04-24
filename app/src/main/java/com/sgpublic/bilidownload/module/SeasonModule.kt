@@ -3,9 +3,9 @@ package com.sgpublic.bilidownload.module
 import android.content.Context
 import android.graphics.Color
 import com.sgpublic.bilidownload.R
-import com.sgpublic.bilidownload.data.Episode.InfoData
-import com.sgpublic.bilidownload.data.Episode.InfoData.Companion.PAYMENT_NORMAL
-import com.sgpublic.bilidownload.data.Episode.QualityData
+import com.sgpublic.bilidownload.data.episode.InfoData
+import com.sgpublic.bilidownload.data.episode.InfoData.Companion.PAYMENT_NORMAL
+import com.sgpublic.bilidownload.data.episode.QualityData
 import com.sgpublic.bilidownload.data.SeasonData
 import com.sgpublic.bilidownload.data.SeriesData
 import okhttp3.Call
@@ -164,9 +164,9 @@ class SeasonModule(private val context: Context, access_key: String) {
     @Throws(JSONException::class)
     private fun doParseAppResult(json: JSONObject) {
         seasonData.actors = json.getJSONObject("actor").getString("info")
-        seasonData.actors_lines = seasonData.actors.split("\n").toTypedArray().size
+        seasonData.actorsLines = seasonData.actors.split("\n").toTypedArray().size
         seasonData.alias = json.getString("alias")
-        seasonData.season_type = json.getInt("type")
+        seasonData.seasonType = json.getInt("type")
         var array: JSONArray = json.getJSONArray("seasons")
         val list: ArrayList<SeriesData> = ArrayList<SeriesData>()
         for (array_index in 0 until array.length()) {
@@ -174,20 +174,20 @@ class SeasonModule(private val context: Context, access_key: String) {
             val seriesData = SeriesData()
             seriesData.badge = objectIndex.getString("badge")
             val objectIndexBadgeInfo: JSONObject = objectIndex.getJSONObject("badge_info")
-            seriesData.badge_color = Color.parseColor(
+            seriesData.badgeColor = Color.parseColor(
                 objectIndexBadgeInfo.getString("bg_color")
             )
-            seriesData.badge_color_night = Color.parseColor(
+            seriesData.badgeColorNight = Color.parseColor(
                 objectIndexBadgeInfo.getString("bg_color_night")
             )
             seriesData.cover = objectIndex.getString("cover")
             seriesData.title = objectIndex.getString("title")
-            seriesData.season_id = objectIndex.getLong("season_id")
-            if (seriesData.season_id != sid) {
+            seriesData.seasonId = objectIndex.getLong("season_id")
+            if (seriesData.seasonId != sid) {
                 list.add(seriesData)
             } else {
-                seriesData.season_type_name = json.getString("type_name")
-                seasonData.base_info = seriesData
+                seriesData.seasonTypeName = json.getString("type_name")
+                seasonData.baseInfo = seriesData
             }
         }
         seasonData.series = list
@@ -210,7 +210,7 @@ class SeasonModule(private val context: Context, access_key: String) {
         seasonData.description = description.toString()
         seasonData.evaluate = json.getString("evaluate")
         seasonData.staff = json.getJSONObject("staff").getString("info")
-        seasonData.staff_lines = seasonData.staff.split("\n").toTypedArray().size
+        seasonData.staffLines = seasonData.staff.split("\n").toTypedArray().size
         val styles = StringBuilder()
         val arrayStyles: JSONArray = json.getJSONArray("styles")
         description.append("番剧 | ")
@@ -400,22 +400,22 @@ class SeasonModule(private val context: Context, access_key: String) {
             val objectEpisodesIndex: JSONObject = array.getJSONObject(episodes_index)
             episodeDataIndex.aid = objectEpisodesIndex.getLong("aid")
             episodeDataIndex.cid = objectEpisodesIndex.getLong("cid")
-            episodeDataIndex.ep_id = objectEpisodesIndex.getLong("id")
+            episodeDataIndex.epId = objectEpisodesIndex.getLong("id")
             episodeDataIndex.cover = objectEpisodesIndex.getString("cover")
             episodeDataIndex.payment = objectEpisodesIndex.getInt("status")
             episodeDataIndex.bvid = objectEpisodesIndex.getString("bvid")
-            episodeDataIndex.area_limit = objectEpisodesIndex.getInt("status")
+            episodeDataIndex.areaLimit = objectEpisodesIndex.getInt("status")
             val objectEpisodesIndexBadge: JSONObject =
                 objectEpisodesIndex.getJSONObject("badge_info")
             episodeDataIndex.badge = objectEpisodesIndexBadge.getString("text")
-            episodeDataIndex.badge_color = Color.parseColor(
+            episodeDataIndex.badgeColor = Color.parseColor(
                 objectEpisodesIndexBadge.getString("bg_color")
             )
-            episodeDataIndex.badge_color_night = Color.parseColor(
+            episodeDataIndex.badgeColorNight = Color.parseColor(
                 objectEpisodesIndexBadge.getString("bg_color_night")
             )
             val dateFormat = SimpleDateFormat.getDateInstance()
-            episodeDataIndex.pub_real_time = dateFormat.format(Date(
+            episodeDataIndex.pubRealTime = dateFormat.format(Date(
                     objectEpisodesIndex.getLong("pub_time") * 1000L
             ))
             episodeDataIndex.title = objectEpisodesIndex.getString("long_title")

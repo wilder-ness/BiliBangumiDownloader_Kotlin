@@ -3,23 +3,23 @@ package com.sgpublic.bilidownload.data
 import java.util.*
 
 data class SeriesData(
-        var season_type: Int = 0,
-        var season_type_name: String = "",
-        var badge: String = "",
-        var badge_color: Int = 0,
-        var badge_color_night: Int = 0,
-        var cover: String = "",
-        var title: String = "",
-        var season_id: Long = 0L
+    var seasonType: Int = 0,
+    var seasonTypeName: String = "",
+    var badge: String = "",
+    var badgeColor: Int = 0,
+    var badgeColorNight: Int = 0,
+    var cover: String = "",
+    var title: String = "",
+    var seasonId: Long = 0L
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
         val that = other as SeriesData
-        return season_id == that.season_id
+        return seasonId == that.seasonId
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(season_id)
+        return Objects.hash(seasonId)
     }
 }

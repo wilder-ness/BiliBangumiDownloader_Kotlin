@@ -18,7 +18,7 @@ import com.bumptech.glide.request.target.Target
 import com.sgpublic.bilidownload.R
 import com.sgpublic.bilidownload.base.BaseActivity
 import com.sgpublic.bilidownload.base.CrashHandler
-import com.sgpublic.bilidownload.data.Episode.InfoData
+import com.sgpublic.bilidownload.data.episode.InfoData
 import com.sgpublic.bilidownload.data.SeasonData
 import com.sgpublic.bilidownload.data.SeriesData
 import com.sgpublic.bilidownload.databinding.*
@@ -46,7 +46,7 @@ class Season: BaseActivity<ActivitySeasonBinding>() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         seasonInfo = SeriesData()
-        seasonInfo.season_id = intent.getLongExtra("season_id", 0)
+        seasonInfo.seasonId = intent.getLongExtra("season_id", 0)
         seasonInfo.cover = intent.getStringExtra("cover_url").toString()
         seasonInfo.title = intent.getStringExtra("title").toString()
         binding.seasonCollapsingToolbar.title = seasonInfo.title
@@ -93,7 +93,7 @@ class Season: BaseActivity<ActivitySeasonBinding>() {
                 .into(binding.seasonCover)
 
         val module = SeasonModule(this@Season, ConfigManager.getString("access_key"))
-        module.getInfoBySid(seasonInfo.season_id, object : SeasonModule.Callback {
+        module.getInfoBySid(seasonInfo.seasonId, object : SeasonModule.Callback {
             override fun onFailure(code: Int, message: String?, e: Throwable?) {
                 onToast(R.string.error_bangumi_load, message, code)
                 runOnUiThread {
@@ -105,7 +105,7 @@ class Season: BaseActivity<ActivitySeasonBinding>() {
 
             override fun onResult(episodeData: ArrayList<InfoData>, seasonData: SeasonData) {
                 this@Season.episodeData = episodeData
-                this@Season.seasonInfo = seasonData.base_info
+                this@Season.seasonInfo = seasonData.baseInfo
                 this@Season.seasonData = seasonData
                 Timer().schedule(object : TimerTask() {
                     override fun run() {
@@ -203,11 +203,11 @@ class Season: BaseActivity<ActivitySeasonBinding>() {
         }
         pagerInfoBinding.seasonStuff.setOnClickListener {
             pagerInfoBinding.seasonStuff.maxLines =
-                if (seasonData.staff_lines == pagerInfoBinding.seasonStuff.maxLines) 3 else seasonData.staff_lines
+                if (seasonData.staffLines == pagerInfoBinding.seasonStuff.maxLines) 3 else seasonData.staffLines
         }
         pagerInfoBinding.seasonActors.setOnClickListener {
             pagerInfoBinding.seasonActors.maxLines =
-                if (seasonData.actors_lines == pagerInfoBinding.seasonActors.maxLines) 3 else seasonData.actors_lines
+                if (seasonData.actorsLines == pagerInfoBinding.seasonActors.maxLines) 3 else seasonData.actorsLines
         }
         pagerInfoBinding.seasonContent.text = seasonData.description
         if (seasonData.alias != "") {
@@ -351,7 +351,7 @@ class Season: BaseActivity<ActivitySeasonBinding>() {
             }
             itemSeasonEpisode.episodePublicTime.text = String.format(
                 getString(R.string.text_episode_public_time),
-                episodeDataIndex.pub_real_time
+                episodeDataIndex.pubRealTime
             )
             var indexTitle = episodeDataIndex.index
             try {
@@ -367,9 +367,9 @@ class Season: BaseActivity<ActivitySeasonBinding>() {
             } else {
                 itemSeasonEpisode.episodeVipBackground.visibility = View.VISIBLE
                 if (nightMode) {
-                    itemSeasonEpisode.episodeVipBackground.setCardBackgroundColor(episodeDataIndex.badge_color_night)
+                    itemSeasonEpisode.episodeVipBackground.setCardBackgroundColor(episodeDataIndex.badgeColorNight)
                 } else {
-                    itemSeasonEpisode.episodeVipBackground.setCardBackgroundColor(episodeDataIndex.badge_color)
+                    itemSeasonEpisode.episodeVipBackground.setCardBackgroundColor(episodeDataIndex.badgeColor)
                 }
                 itemSeasonEpisode.episodeVip.text = episodeDataIndex.badge
             }

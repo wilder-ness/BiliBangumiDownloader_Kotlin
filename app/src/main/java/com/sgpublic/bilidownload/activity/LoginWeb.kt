@@ -62,10 +62,10 @@ class LoginWeb: BaseActivity<ActivityLoginWebBinding>(), LoginModule.Callback {
     override fun onLimited() { }
 
     override fun onResult(token: TokenData, mid: Long) {
-        ConfigManager.putString("access_key", token.access_token)
+        ConfigManager.putString("access_key", token.accessToken)
         ConfigManager.putLong("mid", mid)
-        ConfigManager.putLong("expires_in", token.expires_in)
-        val module = UserInfoModule(this@LoginWeb, token.access_token, mid)
+        ConfigManager.putLong("expires_in", token.expiresIn)
+        val module = UserInfoModule(this@LoginWeb, token.accessToken, mid)
         module.getInfo(object : UserInfoModule.Callback {
             override fun onFailure(code: Int, message: String?, e: Throwable?) {
                 onToast(R.string.error_login, message, code)
@@ -79,8 +79,8 @@ class LoginWeb: BaseActivity<ActivityLoginWebBinding>(), LoginModule.Callback {
                 ConfigManager.putString("sign", data.sign)
                 ConfigManager.putString("face", data.face)
                 ConfigManager.putInt("sex", data.sex)
-                ConfigManager.putInt("vip_type", data.vip_type)
-                ConfigManager.putInt("vip_state", data.vip_state)
+                ConfigManager.putInt("vip_type", data.vipType)
+                ConfigManager.putInt("vip_state", data.vipState)
                 ConfigManager.putInt("level", data.level)
                 ConfigManager.putBoolean("is_login", true)
                 stopOnLoadingState()

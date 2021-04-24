@@ -169,7 +169,7 @@ class Search: BaseActivity<ActivitySearchBinding>() {
                                     binding.searchResultList.removeAllViews()
                                     for (data_index in searchData.indices) {
                                         val data = searchData[data_index]
-                                        val searchItem: View? = when (data.selection_style) {
+                                        val searchItem: View? = when (data.selectionStyle) {
                                             "grid" -> {
                                                 getGridSearchView(data)
                                             }
@@ -209,23 +209,23 @@ class Search: BaseActivity<ActivitySearchBinding>() {
             binding.searchResultList,
             false
         )
-        searchItem.itemSearchSeasonTitle.text = data.season_title
-        searchItem.itemSearchSeasonContent.text = data.season_content
-        searchItem.itemSearchRatingString.text = data.media_score.toString()
-        if (data.angle_title == "") {
+        searchItem.itemSearchSeasonTitle.text = data.seasonTitle
+        searchItem.itemSearchSeasonContent.text = data.seasonContent
+        searchItem.itemSearchRatingString.text = data.mediaScore.toString()
+        if (data.angleTitle == "") {
             searchItem.itemSeasonBadges.visibility = View.GONE
         } else {
             searchItem.itemSeasonBadges.visibility = View.VISIBLE
-            searchItem.itemSeasonBadges.text = data.angle_title
+            searchItem.itemSeasonBadges.text = data.angleTitle
         }
-        if (data.media_score == 0.0) {
+        if (data.mediaScore == 0.0) {
             searchItem.itemSearchRatingNull.visibility = View.VISIBLE
             searchItem.itemSearchRatingString.visibility = View.INVISIBLE
         } else {
             searchItem.itemSearchRatingNull.visibility = View.INVISIBLE
             searchItem.itemSearchRatingString.visibility = View.VISIBLE
         }
-        searchItem.itemSearchRatingStart.progress = data.media_score.roundToInt()
+        searchItem.itemSearchRatingStart.progress = data.mediaScore.roundToInt()
         searchItem.itemSearchBaseGo.setOnClickListener {
             goToSeason(data)
         }
@@ -237,7 +237,7 @@ class Search: BaseActivity<ActivitySearchBinding>() {
             .error(R.drawable.pic_load_failed)
             .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
         Glide.with(this@Search)
-            .load(data.season_cover)
+            .load(data.seasonCover)
             .apply(requestOptions)
             .addListener(object : RequestListener<Drawable?> {
                 override fun onLoadFailed(
@@ -270,17 +270,17 @@ class Search: BaseActivity<ActivitySearchBinding>() {
             binding.searchResultList,
             false
         )
-        searchItem.itemSearchEpisodeTitle.text = data.episode_title
+        searchItem.itemSearchEpisodeTitle.text = data.episodeTitle
         searchItem.itemSearchEpisodeFrom.text = String.format(
             getString(R.string.text_search_from),
-            data.season_title.toString()
+            data.seasonTitle.toString()
         )
-        if ("" == data.episode_badges) {
+        if ("" == data.episodeBadges) {
             searchItem.itemEpisodeBadges.visibility = View.GONE
         } else {
             searchItem.itemEpisodeBadges.visibility =
                 View.VISIBLE
-            searchItem.itemEpisodeBadges.text = data.episode_badges
+            searchItem.itemEpisodeBadges.text = data.episodeBadges
         }
         searchItem.itemSearchEpisodeAction.setOnClickListener {
             goToSeason(data)
@@ -290,7 +290,7 @@ class Search: BaseActivity<ActivitySearchBinding>() {
             .error(R.drawable.pic_load_failed)
             .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
         Glide.with(this@Search)
-            .load(data.episode_cover)
+            .load(data.episodeCover)
             .apply(requestOptions)
             .addListener(object : RequestListener<Drawable?> {
                 override fun onLoadFailed(
@@ -320,9 +320,9 @@ class Search: BaseActivity<ActivitySearchBinding>() {
     private fun goToSeason(data: SearchData) {
         Season.startActivity(
             this@Search,
-            data.season_title.toString(),
-            data.season_id,
-            data.season_cover
+            data.seasonTitle.toString(),
+            data.seasonId,
+            data.seasonCover
         )
     }
 

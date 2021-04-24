@@ -1,19 +1,19 @@
-package com.sgpublic.bilidownload.data.Episode
+package com.sgpublic.bilidownload.data.episode
 
 import com.sgpublic.bilidownload.data.DownloadTaskData
 import com.sgpublic.bilidownload.data.SeriesData
 import java.util.*
 
 class TaskData(
-        var code: Int = 0,
-        var message: String = "",
-        var quality: Int = 0,
-        var season_type: Int = 0,
-        var season_type_name: String = "",
-        var media_type: Int = 0,
-        var seriesData: SeriesData = SeriesData(),
-        var episodeData: InfoData = InfoData(),
-        var task_info: DownloadTaskData = DownloadTaskData()
+    var code: Int = 0,
+    var message: String = "",
+    var quality: Int = 0,
+    var seasonType: Int = 0,
+    var seasonTypeName: String = "",
+    var mediaType: Int = 0,
+    var seriesData: SeriesData = SeriesData(),
+    var episodeData: InfoData = InfoData(),
+    var taskInfo: DownloadTaskData = DownloadTaskData()
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

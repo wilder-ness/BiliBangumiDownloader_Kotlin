@@ -1,4 +1,4 @@
-package com.sgpublic.bilidownload.data.Episode
+package com.sgpublic.bilidownload.data.episode
 
 data class QualityData (
     var quality: Int,
