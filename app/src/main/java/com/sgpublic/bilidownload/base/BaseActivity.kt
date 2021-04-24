@@ -12,6 +12,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.viewbinding.ViewBinding
 import com.sgpublic.bilidownload.R
 import com.sgpublic.bilidownload.util.ActivityCollector
+import com.sgpublic.swipebacklayoutx.SwipeBackLayoutX
 import com.sgpublic.swipebacklayoutx.app.SwipeBackActivity
 import com.yanzhenjie.sofia.Sofia
 import java.lang.reflect.ParameterizedType
@@ -21,7 +22,6 @@ import java.util.*
 abstract class BaseActivity<T : ViewBinding>: SwipeBackActivity() {
     protected lateinit var binding: T
 
-    private val edgeSize: Int = 200
     private var rootViewBottom: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,9 +43,22 @@ abstract class BaseActivity<T : ViewBinding>: SwipeBackActivity() {
         val method = clazz.getMethod("inflate", LayoutInflater::class.java)
         binding = method.invoke(null, layoutInflater) as T
         setContentView(binding.root)
-    }
 
-    protected open fun onSetSwipeBackEnable(): Boolean = true
+        if (isActivityAtBottom()){
+            setSwipeBackEnable(false)
+        } else {
+            setSwipeBackEnable(true)
+            swipeBackLayout.setEdgeTrackingEnabled(SwipeBackLayoutX.EDGE_LEFT)
+            swipeBackLayout.setEdgeSize(200)
+        }
+
+        Sofia.with(this)
+                .statusBarBackgroundAlpha(0)
+                .navigationBarBackgroundAlpha(0)
+                .invasionNavigationBar()
+                .invasionStatusBar()
+                .statusBarDarkFont()
+    }
 
     protected open fun initViewAtTop(view: View){
         var statusbarheight = 0
@@ -82,14 +95,7 @@ abstract class BaseActivity<T : ViewBinding>: SwipeBackActivity() {
         }
     }
 
-    protected open fun onViewSetup(){
-        Sofia.with(this)
-            .statusBarBackgroundAlpha(0)
-            .navigationBarBackgroundAlpha(0)
-            .invasionNavigationBar()
-            .invasionStatusBar()
-            .statusBarDarkFont()
-    }
+    abstract fun onViewSetup()
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -120,25 +126,22 @@ abstract class BaseActivity<T : ViewBinding>: SwipeBackActivity() {
         ActivityCollector.removeActivity(this)
     }
 
-    protected open fun setAnimateState(
-        is_visible: Boolean,
-        duration: Int,
-        view: View,
-        callback: Runnable? = null
-    ) {
+    protected open fun setAnimateState(isVisible: Boolean, duration: Int, view: View, callback: Runnable? = null) {
         runOnUiThread {
-            if (is_visible) {
-                view.visibility = View.VISIBLE
-                view.animate().alphaBy(0f).alpha(1f).setDuration(duration.toLong())
-                    .setListener(null)
-                callback?.run()
+            if (isVisible) {
+                    view.visibility = View.VISIBLE
+                    view.animate().alphaBy(0f).alpha(1f).setDuration(duration.toLong())
+                        .setListener(null)
+                    callback?.run()
             } else {
                 view.animate().alphaBy(1f).alpha(0f).setDuration(duration.toLong())
                     .setListener(null)
                 Timer().schedule(object : TimerTask() {
                     override fun run() {
-                        view.visibility = View.GONE
-                        callback?.run()
+                        runOnUiThread {
+                            view.visibility = View.GONE
+                            callback?.run()
+                        }
                     }
                 }, duration.toLong())
             }

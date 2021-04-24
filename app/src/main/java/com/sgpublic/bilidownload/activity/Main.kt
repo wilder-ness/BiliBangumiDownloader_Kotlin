@@ -19,7 +19,6 @@ class Main: BaseActivity<ActivityMainBinding>() {
     }
 
     override fun onViewSetup() {
-        super.onViewSetup()
         binding.navBangumi.setOnClickListener {
             replaceFragment(R.id.main_fragment_bangumi, Bangumi(this@Main))
             selectNavigation(0)
@@ -80,12 +79,12 @@ class Main: BaseActivity<ActivityMainBinding>() {
 
     override fun onPause() {
         super.onPause()
-//        binding.navView.setFPS(-1)
+        binding.navView.setFPS(0)
     }
 
     override fun onResume() {
         super.onResume()
-//        binding.navView.setFPS(60)
+        binding.navView.setFPS(60)
     }
 
     override fun isActivityAtBottom(): Boolean = true

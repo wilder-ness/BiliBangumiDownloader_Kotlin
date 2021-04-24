@@ -39,12 +39,12 @@ class Bangumi(private val context: AppCompatActivity): BaseFragment<FragmentBang
     }
 
     override fun onViewSetup() {
-        super.onViewSetup()
         initViewAtTop(binding.bangumiSearchBase)
         initViewAtTop(binding.bangumiBanner)
         binding.bangumiSearch.setOnClickListener {
             Search.startActivity(context)
         }
+        binding.bangumiRefresh.setProgressViewOffset(false, dip2px(40F), dip2px(125F))
         binding.bangumiRefresh.setOnRefreshListener {
             Timer().schedule(object : TimerTask(){
                 override fun run() {
@@ -69,7 +69,7 @@ class Bangumi(private val context: AppCompatActivity): BaseFragment<FragmentBang
                 CrashHandler.saveExplosion(e, code)
             }
 
-            override fun onResult(followData: ArrayList<FollowData>, has_next: Int) {
+            override fun onResult(followData: ArrayList<FollowData>, hasNext: Int) {
                 runOnUiThread {
                     stopOnLoadingState()
                     if (followData.isEmpty()) {
@@ -79,9 +79,9 @@ class Bangumi(private val context: AppCompatActivity): BaseFragment<FragmentBang
                         binding.bangumiLoadState.visibility = View.INVISIBLE
                         binding.bangumiBase.visibility = View.VISIBLE
                         if (pageIndex == 1) {
-                            setupUserData(followData, has_next)
+                            setupUserData(followData, hasNext)
                         } else {
-                            setGrid(followData, has_next)
+                            setGrid(followData, hasNext)
                         }
                     }
                 }
@@ -91,7 +91,6 @@ class Bangumi(private val context: AppCompatActivity): BaseFragment<FragmentBang
 
     private var isFirstChange = true
     private var bannerInfoList: ArrayList<BannerItem> = ArrayList()
-
     private fun setupUserData(dataArray: ArrayList<FollowData>, has_next: Int) {
         isFirstChange = true
         listRowSize = 0
@@ -176,7 +175,6 @@ class Bangumi(private val context: AppCompatActivity): BaseFragment<FragmentBang
 
     private var listRowSize = 0
     private var scrollToEnd = false
-
     private fun setGrid(data_array: ArrayList<FollowData>, has_next: Int) {
         if (has_next == 0) {
             stopOnLoadingState()
@@ -299,7 +297,6 @@ class Bangumi(private val context: AppCompatActivity): BaseFragment<FragmentBang
 
     private var timer: Timer? = null
     private var imageIndex = 0
-
     private fun startOnLoadingState(imageView: ImageView) {
         imageView.visibility = View.VISIBLE
         timer = Timer()

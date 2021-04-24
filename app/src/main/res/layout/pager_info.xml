@@ -47,7 +47,7 @@
                 </FrameLayout>
 
                 <RatingBar
-                    android:id="@+id/season_rating_start"
+                    android:id="@+id/season_rating_star"
                     style="@style/Widget.AppCompat.RatingBar.Small"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -74,6 +74,7 @@
             android:id="@+id/season_alias_styles_base"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:orientation="vertical"
             android:layout_marginBottom="20dp">
 
@@ -81,6 +82,7 @@
                 android:id="@+id/season_alias_base"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 android:orientation="horizontal"
                 android:layout_marginBottom="8dp">
 
@@ -105,6 +107,7 @@
                 android:id="@+id/season_styles_base"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 android:orientation="horizontal">
 
                 <TextView
@@ -129,6 +132,7 @@
             android:id="@+id/season_actors_base"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:orientation="vertical"
             android:layout_marginBottom="20dp">
 
@@ -157,6 +161,7 @@
             android:id="@+id/season_stuff_base"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:orientation="vertical"
             android:layout_marginBottom="20dp">
 
@@ -185,6 +190,7 @@
             android:id="@+id/season_evaluate_base"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:orientation="vertical"
             android:layout_marginBottom="20dp">
 
@@ -210,6 +216,7 @@
             android:id="@+id/season_series_base"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:orientation="vertical"
             android:layout_marginBottom="80dp">
 

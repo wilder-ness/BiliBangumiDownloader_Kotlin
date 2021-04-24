@@ -18,7 +18,6 @@ class Mine(private val context: AppCompatActivity): BaseFragment<FragmentMineBin
     }
 
     override fun onViewSetup() {
-        super.onViewSetup()
         Glide.with(context)
             .load(ConfigManager.getString("face"))
             .into(binding.mineAvatar)
@@ -72,7 +71,7 @@ class Mine(private val context: AppCompatActivity): BaseFragment<FragmentMineBin
             Setting.startActivity(context)
         }
         binding.mineOtherBangumi.setOnClickListener {
-            OtherFollows.startActivity(context)
+            MyFollows.startActivity(context)
         }
     }
 }

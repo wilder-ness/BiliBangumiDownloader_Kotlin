@@ -26,8 +26,6 @@ class About: BaseActivity<ActivityAboutBinding>() {
     }
 
     override fun onViewSetup() {
-        super.onViewSetup()
-
         setSupportActionBar(binding.aboutToolbar)
         supportActionBar?.run {
             title = ""
@@ -164,5 +162,4 @@ class About: BaseActivity<ActivityAboutBinding>() {
         }
     }
 
-    override fun onSetSwipeBackEnable(): Boolean = true
 }

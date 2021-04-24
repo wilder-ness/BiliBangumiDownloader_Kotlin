@@ -77,7 +77,7 @@ abstract class BaseFragment<T: ViewBinding>(private val contest: AppCompatActivi
         return method.invoke(null, inflater, container, false) as T
     }
 
-    protected open fun onViewSetup(){ }
+    abstract fun onViewSetup()
 
     protected fun onToast(content: String?) {
         runOnUiThread {

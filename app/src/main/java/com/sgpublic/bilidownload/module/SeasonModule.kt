@@ -427,7 +427,7 @@ class SeasonModule(private val context: Context, access_key: String) {
 
     interface Callback {
         fun onFailure(code: Int, message: String?, e: Throwable?)
-        fun onResult(episodeData: ArrayList<InfoData>?, seasonData: SeasonData?)
+        fun onResult(episodeData: ArrayList<InfoData>, seasonData: SeasonData)
     }
 
     companion object {

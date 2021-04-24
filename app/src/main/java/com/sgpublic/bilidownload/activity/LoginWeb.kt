@@ -93,7 +93,6 @@ class LoginWeb: BaseActivity<ActivityLoginWebBinding>(), LoginModule.Callback {
     }
 
     override fun onViewSetup() {
-        super.onViewSetup()
         setSupportActionBar(binding.loginWebToolbar)
         supportActionBar?.run {
             setTitle(R.string.title_login_web)
@@ -136,5 +135,4 @@ class LoginWeb: BaseActivity<ActivityLoginWebBinding>(), LoginModule.Callback {
         }
     }
 
-    override fun onSetSwipeBackEnable(): Boolean = true
 }

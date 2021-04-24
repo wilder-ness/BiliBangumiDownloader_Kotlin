@@ -13,7 +13,6 @@ import com.sgpublic.bilidownload.base.BaseActivity
 import com.sgpublic.bilidownload.databinding.ActivitySettingBinding
 import com.sgpublic.bilidownload.databinding.DialogSettingTaskCountBinding
 import com.sgpublic.bilidownload.manager.ConfigManager
-import com.sgpublic.bilidownload.util.MyLog
 import java.util.*
 
 class Setting: BaseActivity<ActivitySettingBinding>() {
@@ -49,16 +48,16 @@ class Setting: BaseActivity<ActivitySettingBinding>() {
     }
 
     override fun onViewSetup() {
-        super.onViewSetup()
         setSupportActionBar(binding.settingToolbar)
         supportActionBar?.run {
             setDisplayHomeAsUpEnabled(true)
             setTitle(R.string.title_mine_setting)
         }
 
-        binding.settingTaskCount.setOnClickListener {
-            taskCountSetting(1, 3)
-        }
+        binding.settingTaskCount.alpha = 0.3F
+//        binding.settingTaskCount.setOnClickListener {
+//            taskCountSetting(1, 3)
+//        }
         binding.settingQuality.setOnClickListener {
             qualitySetting()
         }
@@ -175,5 +174,4 @@ class Setting: BaseActivity<ActivitySettingBinding>() {
         }
     }
 
-    override fun onSetSwipeBackEnable(): Boolean = true
 }

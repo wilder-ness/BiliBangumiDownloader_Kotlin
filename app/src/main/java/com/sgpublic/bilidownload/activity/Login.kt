@@ -15,7 +15,6 @@ import com.sgpublic.bilidownload.databinding.ActivityLoginBinding
 import com.sgpublic.bilidownload.manager.ConfigManager
 import com.sgpublic.bilidownload.module.LoginModule
 import com.sgpublic.bilidownload.module.UserInfoModule
-import java.lang.NullPointerException
 
 class Login: BaseActivity<ActivityLoginBinding>() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -91,7 +90,6 @@ class Login: BaseActivity<ActivityLoginBinding>() {
     }
 
     override fun onViewSetup() {
-        super.onViewSetup()
         binding.loginPassword.addTextChangedListener {
             if (it == null){
                 return@addTextChangedListener
@@ -127,5 +125,4 @@ class Login: BaseActivity<ActivityLoginBinding>() {
 
     override fun isActivityAtBottom(): Boolean = true
 
-    override fun onSetSwipeBackEnable(): Boolean = true
 }

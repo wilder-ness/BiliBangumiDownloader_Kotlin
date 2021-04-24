@@ -31,7 +31,7 @@
         <activity android:name=".activity.LoginWeb" />
         <activity android:name=".activity.Setting" />
         <activity android:name=".activity.About" />
-        <activity android:name=".activity.OtherFollows" />
+        <activity android:name=".activity.MyFollows" />
         <activity android:name=".activity.Season" />
         <activity android:name=".activity.Download"/>
         <activity

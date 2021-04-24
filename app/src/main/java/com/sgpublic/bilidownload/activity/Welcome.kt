@@ -76,6 +76,10 @@ class Welcome: BaseActivity<ActivityWelcomeBinding>(), UpdateModule.Callback {
         }, 300)
     }
 
+    override fun onViewSetup() {
+
+    }
+
     private fun refreshUserInfo(){
         val userInfoModule = UserInfoModule(
                 this@Welcome,

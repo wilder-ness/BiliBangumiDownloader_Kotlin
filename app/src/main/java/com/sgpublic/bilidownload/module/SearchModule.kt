@@ -223,16 +223,16 @@ class SearchModule(private val context: Context) {
 
     interface SearchCallback {
         fun onFailure(code: Int, message: String?, e: Throwable?)
-        fun onResult(searchData: ArrayList<SearchData>?)
+        fun onResult(searchData: ArrayList<SearchData>)
     }
 
     interface SuggestCallback {
         fun onFailure(code: Int, message: String?, e: Throwable?)
-        fun onResult(suggestions: ArrayList<Spannable>?)
+        fun onResult(suggestions: ArrayList<Spannable>)
     }
 
     interface HotWordCallback {
         fun onFailure(code: Int, message: String?, e: Throwable?)
-        fun onResult(hotWords: ArrayList<String>?)
+        fun onResult(hotWords: ArrayList<String>)
     }
 }

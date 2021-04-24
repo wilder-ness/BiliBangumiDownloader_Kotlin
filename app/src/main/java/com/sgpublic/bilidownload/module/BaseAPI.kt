@@ -194,13 +194,14 @@ class BaseAPI(private val accessToken: String) {
         val url = "https://api.bilibili.com/pgc/player/api/playurl"
         val argArray: Map<String, Any> = mutableMapOf(
             "access_key" to accessToken,
+            "appkey" to android_key,
             "build" to build,
             "cid" to cid,
             "fnval" to 16,
             "fnver" to 0,
             "fourk" to 1,
             "module" to "bangumi",
-            "otype" to "otype",
+            "otype" to "json",
             "platform" to platform,
             "qn" to qn,
             "season_type" to 1,

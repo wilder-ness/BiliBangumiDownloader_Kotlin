@@ -17,7 +17,6 @@ class License: BaseActivity<ActivityLicenseBinding>() {
     }
 
     override fun onViewSetup() {
-        super.onViewSetup()
         setSupportActionBar(binding.licenseToolbar)
         supportActionBar?.run {
             setTitle(R.string.title_about_license)
@@ -96,5 +95,4 @@ class License: BaseActivity<ActivityLicenseBinding>() {
         }
     }
 
-    override fun onSetSwipeBackEnable(): Boolean = true
 }

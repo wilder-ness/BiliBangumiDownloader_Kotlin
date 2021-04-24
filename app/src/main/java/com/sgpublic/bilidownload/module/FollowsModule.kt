@@ -84,6 +84,6 @@ class FollowsModule(private val context: Context, access_key: String) {
 
     interface Callback {
         fun onFailure(code: Int, message: String?, e: Throwable?)
-        fun onResult(followData: ArrayList<FollowData>, has_next: Int)
+        fun onResult(followData: ArrayList<FollowData>, hasNext: Int)
     }
 }

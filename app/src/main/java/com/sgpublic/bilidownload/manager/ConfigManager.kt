@@ -119,12 +119,12 @@ class ConfigManager {
             return QualityItem(QUALITIES[80]!!, 80, 2)
         }
 
-        fun checkClient(): ClientItem {
+        fun checkClient(): ClientItem? {
             val clientItems: ArrayList<ClientItem> = getInstalledClients()
             val packageName: String = getString("package", "tv.danmaku.bili")
             val result = ClientItem(TYPES["tv.danmaku.bili"]!!, "tv.danmaku.bili")
             if (clientItems.size <= 0) {
-                return result
+                return null
             }
             for ((key, value) in TYPES) {
                 if (key == packageName){

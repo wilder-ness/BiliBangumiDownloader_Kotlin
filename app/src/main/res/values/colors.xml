@@ -4,7 +4,7 @@
     <color name="colorPrimaryDark">#2196F3</color>
     <color name="colorAccent">#2196F3</color>
     <color name="colorAlert">#0099ff</color>
-    <color name="colorCompat">#FFFFFF</color>
+    <color name="colorCompat">#E9F5FF</color>
     <color name="colorWindowBackground">#FAFAFA</color>
     <color name="colorTransparent">#00000000</color>
     <color name="colorBlurAlphaStart">#D0FAFAFA</color>

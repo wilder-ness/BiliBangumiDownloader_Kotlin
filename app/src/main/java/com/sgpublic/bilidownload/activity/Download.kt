@@ -9,5 +9,7 @@ class Download: BaseActivity<ActivityDownloadBinding>() {
 
     }
 
-    override fun onSetSwipeBackEnable(): Boolean = true
+    override fun onViewSetup() {
+
+    }
 }

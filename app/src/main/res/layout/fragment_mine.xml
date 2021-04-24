@@ -169,7 +169,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="6dp"
-                        android:text="@string/title_mine_other_bangumi"
+                        android:text="@string/title_mine_my_follows"
                         android:textSize="14sp"
                         android:textColor="@color/color_mine_title" />
                 </LinearLayout>
