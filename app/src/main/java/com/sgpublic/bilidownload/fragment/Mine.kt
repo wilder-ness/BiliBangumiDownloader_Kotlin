@@ -5,9 +5,11 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.kongzue.dialogx.dialogs.MessageDialog
-import com.kongzue.dialogx.interfaces.OnDialogButtonClickListener
 import com.sgpublic.bilidownload.R
-import com.sgpublic.bilidownload.activity.*
+import com.sgpublic.bilidownload.activity.About
+import com.sgpublic.bilidownload.activity.Login
+import com.sgpublic.bilidownload.activity.MyFollows
+import com.sgpublic.bilidownload.activity.Setting
 import com.sgpublic.bilidownload.base.BaseFragment
 import com.sgpublic.bilidownload.databinding.FragmentMineBinding
 import com.sgpublic.bilidownload.manager.ConfigManager
@@ -55,12 +57,10 @@ class Mine(private val context: AppCompatActivity): BaseFragment<FragmentMineBin
             MessageDialog.build()
                 .setTitle(R.string.title_mine_logout)
                 .setMessage(R.string.text_mine_logout_check)
-                .setOkButton(R.string.text_ok, object : OnDialogButtonClickListener<MessageDialog> {
-                    override fun onClick(baseDialog: MessageDialog?, v: View?): Boolean {
-                        Login.startActivity(context)
-                        return false
-                    }
-                })
+                .setOkButton(R.string.text_ok) { _, _ ->
+                    Login.startActivity(context)
+                    false
+                }
                 .setCancelButton(R.string.text_cancel)
                 .show()
         }

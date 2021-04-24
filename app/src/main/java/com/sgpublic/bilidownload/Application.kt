@@ -15,7 +15,6 @@ class Application : Application() {
         MyLog.v("APP启动")
         CrashHandler.init(this)
         ConfigManager.init(this)
-//        BlurKit.init(this)
         DialogX.init(this)
         DialogX.globalStyle = MIUIStyle.style()
     }

@@ -1,5 +1,6 @@
 package com.sgpublic.bilidownload.module
 
+import com.sgpublic.bilidownload.BuildConfig
 import com.sgpublic.bilidownload.util.MyLog
 import io.reactivex.annotations.Beta
 import okhttp3.*
@@ -45,12 +46,12 @@ class BaseAPI(private val accessToken: String) {
             "username" to username,
         )
         val headerArray: Map<String, Any> = mutableMapOf(
-            "User-Agent" to "Mozilla/5.0 (bbcallen@gmail.com)",
+            "User-Agent" to "Mozilla/5.0 (sgpublic2002@gmail.com)",
         )
         return onReturn(url, argArray, headerArray, METHOD_POST, true)
     }
 
-    fun getLoginWebRequest(cookie: String, user_agent: String = "Mozilla/5.0 (bbcallen@gmail.com)"): Call {
+    fun getLoginWebRequest(cookie: String, user_agent: String = "Mozilla/5.0 (sgpublic2002@gmail.com)"): Call {
         val url = "https://passport.bilibili.com/login/app/third"
         val argArray: Map<String, Any> = mutableMapOf(
             "appkey" to "27eb53fc9058f8c3",
@@ -89,7 +90,7 @@ class BaseAPI(private val accessToken: String) {
             "Accept-Encoding" to "gzip, deflate",
             "Accept-Language" to "zh-CH,en-US;q=0.8",
             "Cookie" to cookie,
-            "X-Requested-With" to "com.sgpublic.bilidownload",
+            "X-Requested-With" to BuildConfig.APPLICATION_ID,
         )
         return onReturn(url, null, headerArray, METHOD_GET, false)
     }
@@ -251,7 +252,7 @@ class BaseAPI(private val accessToken: String) {
         return onReturn(url, argArray, null, METHOD_GET, true)
     }
 
-    fun getProxyRequest_iill(call: Call): Call {
+    fun proxyrequestIill(call: Call): Call {
         val url = "https://biliproxy.iill.moe/"
         val argArray: Map<String, Any> = mutableMapOf(
             "url" to call.request().url,
@@ -259,6 +260,7 @@ class BaseAPI(private val accessToken: String) {
         return onReturn(url, argArray, null, METHOD_GET, false)
     }
 
+    @Beta
     fun getDanmakuRequest(cid: Long): Call {
         val url = "https://api.bilibili.com/x/v1/dm/list.so"
         val argArray: Map<String, Any> = mutableMapOf(

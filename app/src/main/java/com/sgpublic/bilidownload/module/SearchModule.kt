@@ -78,7 +78,7 @@ class SearchModule(private val context: Context) {
                                 json = array.getJSONObject(arrayIndex)
                                 val valueString = json.getString("value")
                                 val valueSpannable: Spannable = SpannableString(valueString)
-                                for (value_index in 0 until keyword.length) {
+                                for (value_index in keyword.indices) {
                                     val keywordIndex =
                                         keyword.substring(value_index).substring(0, 1)
                                     val valueStringSub = valueString.indexOf(keywordIndex)
@@ -141,25 +141,25 @@ class SearchModule(private val context: Context) {
                                 }
                                 searchData.seasonId = json.getLong("season_id")
                                 //searchData.season_title = object.getString("season_title");
-                                val season_title_string = json.getString("title")
-                                val season_title_spannable: Spannable = SpannableString(
-                                    season_title_string
+                                val seasonTitleString = json.getString("title")
+                                val seasonTitleSpannable: Spannable = SpannableString(
+                                    seasonTitleString
                                         .replace("<em class=\"keyword\">", "")
                                         .replace("</em>", "")
                                 )
-                                val season_title_sub_start =
-                                    season_title_string.indexOf("<em class=\"keyword\">")
-                                val season_title_sub_end = season_title_string
+                                val seasonTitleSubStart =
+                                    seasonTitleString.indexOf("<em class=\"keyword\">")
+                                val seasonTitleSubEnd = seasonTitleString
                                     .replace("<em class=\"keyword\">", "")
                                     .indexOf("</em>")
-                                if (season_title_sub_start >= 0 && season_title_sub_end >= 0) {
-                                    season_title_spannable.setSpan(
+                                if (seasonTitleSubStart >= 0 && seasonTitleSubEnd >= 0) {
+                                    seasonTitleSpannable.setSpan(
                                         ForegroundColorSpan(context.getColor(R.color.colorPrimary)),
-                                        season_title_sub_start, season_title_sub_end,
+                                        seasonTitleSubStart, seasonTitleSubEnd,
                                         Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                                     )
                                 }
-                                searchData.seasonTitle = season_title_spannable
+                                searchData.seasonTitle = seasonTitleSpannable
                                 if (json.getLong("pubtime") * 1000 > System.currentTimeMillis()) {
                                     searchData.selectionStyle = "grid"
                                 } else {
@@ -168,40 +168,36 @@ class SearchModule(private val context: Context) {
                                 }
                                 val date = Date(json.getLong("pubtime") * 1000)
                                 val format = SimpleDateFormat("yyyy", Locale.CHINA)
-                                searchData.seasonContent = """
-                                    ${format.format(date)}｜${json.getString("season_type_name")}｜${
-                                    json.getString(
-                                        "areas"
-                                    )
-                                }
-                                    ${json.getString("styles")}
-                                    """.trimIndent()
-                                var eps_array = json.getJSONArray("eps")
-                                if (eps_array.length() > 0) {
-                                    json = eps_array.getJSONObject(0)
+                                searchData.seasonContent = format.format(date) + "｜"
+                                searchData.seasonContent = json.getString("season_type_name") + "｜" +
+                                        json.getString("areas") + "\n" +
+                                        json.getString("styles")
+                                var epsArray = json.getJSONArray("eps")
+                                if (epsArray.length() > 0) {
+                                    json = epsArray.getJSONObject(0)
                                     searchData.episodeCover = json.getString("cover")
-                                    val episode_title_string = json.getString("long_title")
-                                    val episode_title_spannable: Spannable = SpannableString(
-                                        episode_title_string
+                                    val episodeTitleString = json.getString("long_title")
+                                    val episodeTitleSpannable: Spannable = SpannableString(
+                                        episodeTitleString
                                             .replace("<em class=\"keyword\">", "")
                                             .replace("</em>", "")
                                     )
-                                    val episode_title_sub_start =
-                                        episode_title_string.indexOf("<em class=\"keyword\">")
-                                    val episode_title_sub_end = episode_title_string
+                                    val episodeTitleSubStart =
+                                        episodeTitleString.indexOf("<em class=\"keyword\">")
+                                    val episodeTitleSubEnd = episodeTitleString
                                         .replace("<em class=\"keyword\">", "")
                                         .indexOf("</em>")
-                                    if (episode_title_sub_start >= 0 && episode_title_sub_end >= 0) {
-                                        episode_title_spannable.setSpan(
+                                    if (episodeTitleSubStart >= 0 && episodeTitleSubEnd >= 0) {
+                                        episodeTitleSpannable.setSpan(
                                             ForegroundColorSpan(context.getColor(R.color.colorPrimary)),
-                                            episode_title_sub_start, episode_title_sub_end,
+                                            episodeTitleSubStart, episodeTitleSubEnd,
                                             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                                         )
                                     }
-                                    searchData.episodeTitle = episode_title_spannable
-                                    eps_array = json.getJSONArray("badges")
-                                    if (eps_array.length() > 0) {
-                                        json = eps_array.getJSONObject(0)
+                                    searchData.episodeTitle = episodeTitleSpannable
+                                    epsArray = json.getJSONArray("badges")
+                                    if (epsArray.length() > 0) {
+                                        json = epsArray.getJSONObject(0)
                                         searchData.episodeBadges = json.getString("text")
                                     } else {
                                         searchData.episodeBadges = ""

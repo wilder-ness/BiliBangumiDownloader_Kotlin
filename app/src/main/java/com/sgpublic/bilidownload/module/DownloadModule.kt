@@ -42,14 +42,13 @@ class DownloadModule(private val context: Context) {
                     downloadData.message = json.getString("message")
                 }
             } else {
-                val type: String = json.getString("type")
-                if (type == "FLV") {
-                    downloadData.code = -505
-                    downloadData.message = context.getString(R.string.error_download_flv)
-                } else if (type == "DASH") {
-                    getDASHData(json, data.quality)
-                } else {
-                    downloadData.code = -506
+                when (json.getString("type")) {
+                    "FLV" -> {
+                        downloadData.code = -505
+                        downloadData.message = context.getString(R.string.error_download_flv)
+                    }
+                    "DASH" -> { getDASHData(json, data.quality) }
+                    else -> { downloadData.code = -506 }
                 }
             }
         } catch (e: IOException) {

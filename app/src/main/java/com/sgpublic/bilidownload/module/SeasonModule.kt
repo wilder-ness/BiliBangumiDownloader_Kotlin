@@ -60,7 +60,7 @@ class SeasonModule(private val context: Context, access_key: String) {
         })
     }
 
-    fun getInfoBySidWeb(){
+    private fun getInfoBySidWeb(){
         val call = helper.getSeasonInfoWebRequest(sid)
         call.enqueue(object : okhttp3.Callback {
             override fun onFailure(call: Call, e: IOException) {
@@ -103,7 +103,7 @@ class SeasonModule(private val context: Context, access_key: String) {
 
     private fun getInfoBySidAppProxy(call: Call) {
         val helper = BaseAPI()
-        val callProxy = helper.getProxyRequest_iill(call)
+        val callProxy = helper.proxyrequestIill(call)
         callProxy.enqueue(object : okhttp3.Callback {
             override fun onFailure(call: Call, e: IOException) {
                 if (e is UnknownHostException) {
@@ -133,7 +133,7 @@ class SeasonModule(private val context: Context, access_key: String) {
 
     private fun getInfoBySidWebProxy(call: Call) {
         val helper = BaseAPI()
-        val callProxy = helper.getProxyRequest_iill(call)
+        val callProxy = helper.proxyrequestIill(call)
         callProxy.enqueue(object : okhttp3.Callback {
             override fun onFailure(call: Call, e: IOException) {
                 if (e is UnknownHostException) {
@@ -232,7 +232,7 @@ class SeasonModule(private val context: Context, access_key: String) {
         }
     }
 
-    fun getAvailableQuality(){
+    private fun getAvailableQuality(){
         if (episodeData.size > 0) {
             val call = helper.getEpisodeOfficialRequest(episodeData[0].cid, 112)
             call.enqueue(object : okhttp3.Callback {

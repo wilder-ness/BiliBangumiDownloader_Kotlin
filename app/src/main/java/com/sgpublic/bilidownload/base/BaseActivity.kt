@@ -150,7 +150,7 @@ abstract class BaseActivity<T : ViewBinding>: SwipeBackActivity() {
 
     protected open fun isActivityAtBottom(): Boolean = false
 
-    var last: Long = -1
+    private var last: Long = -1
     override fun onBackPressed() {
         if (!isActivityAtBottom()){
             super.onBackPressed()

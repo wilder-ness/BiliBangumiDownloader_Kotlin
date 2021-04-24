@@ -38,23 +38,17 @@ class UserInfoModule(private val context: Context, accessKey: String, mid: Long)
                         data.face = json.getString("face")
                         data.level = json.getInt("level")
                         data.name = json.getString("name")
-
-                        val sex: String = json.getString("sex")
-                        if (sex == "男") {
-                            data.sex = 1
-                        } else if (sex == "女") {
-                            data.sex = 2
-                        } else {
-                            data.sex = 0
+                        when (json.getString("sex")) {
+                            "男" -> { data.sex = 1 }
+                            "女" -> { data.sex = 2 }
+                            else -> { data.sex = 0 }
                         }
-
                         data.sign = json.getString("sign")
 
                         json = json.getJSONObject("vip")
                         data.vipLabel = json.getJSONObject("label").getString("text")
                         data.vipType = json.getInt("type")
                         data.vipState = json.getInt("status")
-
                         callbackPrivate.onResult(data)
                     } else {
                         callbackPrivate.onFailure(-204, json.getString("message"), null)

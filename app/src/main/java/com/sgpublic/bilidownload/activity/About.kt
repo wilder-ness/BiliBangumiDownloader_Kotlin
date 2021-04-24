@@ -11,6 +11,7 @@ import android.os.Environment
 import android.view.MenuItem
 import android.view.View
 import com.kongzue.dialogx.dialogs.MessageDialog
+import com.sgpublic.bilidownload.BuildConfig
 import com.sgpublic.bilidownload.R
 import com.sgpublic.bilidownload.base.BaseActivity
 import com.sgpublic.bilidownload.base.CrashHandler
@@ -32,10 +33,7 @@ class About: BaseActivity<ActivityAboutBinding>() {
             setDisplayHomeAsUpEnabled(true)
         }
         try {
-            binding.aboutVersion.text = String.format(
-                getString(R.string.text_version),
-                packageManager.getPackageInfo(packageName, 0).versionName
-            )
+            binding.aboutVersion.text = String.format(getString(R.string.text_version), BuildConfig.VERSION_NAME)
         } catch (ignore: PackageManager.NameNotFoundException) { }
         binding.aboutDeveloper.setOnClickListener {
             MessageDialog.build()

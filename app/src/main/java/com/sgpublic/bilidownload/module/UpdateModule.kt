@@ -9,6 +9,7 @@ import android.content.pm.PackageManager
 import android.database.Cursor
 import android.net.Uri
 import androidx.core.content.FileProvider
+import com.sgpublic.bilidownload.BuildConfig
 import com.sgpublic.bilidownload.R
 import com.sgpublic.bilidownload.manager.ConfigManager
 import com.sgpublic.bilidownload.manager.DownloadTaskManager
@@ -19,7 +20,6 @@ import org.json.JSONObject
 import java.io.File
 import java.io.IOException
 import java.net.UnknownHostException
-import java.util.*
 
 class UpdateModule(private val context: Context) {
     private lateinit var callbackPrivate: Callback
@@ -31,8 +31,8 @@ class UpdateModule(private val context: Context) {
                 override fun onReceive(context: Context, intent: Intent) {
                     val manager: DownloadManager =
                             context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-                    val ID: Long = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
-                    if (ID == Id) {
+                    val taskId: Long = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+                    if (taskId == Id) {
                         val query: DownloadManager.Query = DownloadManager.Query()
                         query.setFilterById(Id)
                         val cursor: Cursor = manager.query(query)
@@ -83,8 +83,7 @@ class UpdateModule(private val context: Context) {
             override fun onResponse(call: Call, response: Response) {
                 val result = response.body!!.string()
                 try {
-                    val verCodeNow = context.packageManager
-                        .getPackageInfo(context.packageName, 0).versionCode
+                    val verCodeNow = BuildConfig.VERSION_CODE
                     val json = JSONObject(result)
                     val updateTable: JSONObject = json.getJSONObject("latest")
                     val disable: Long = updateTable.getInt("disable").toLong()
@@ -105,10 +104,10 @@ class UpdateModule(private val context: Context) {
                                     callbackPrivate.onUpToDate()
                                 }
                             } else {
-                                val is_force =
+                                val isForce =
                                     if (updateTable.getInt("force_ver") > verCodeNow) 1 else 0
                                 callbackPrivate.onUpdate(
-                                    is_force, verName, sizeString,
+                                    isForce, verName, sizeString,
                                     updateTable.getString("changelog"), urlDl
                                 )
                             }
@@ -116,12 +115,12 @@ class UpdateModule(private val context: Context) {
                             callbackPrivate.onUpToDate()
                         }
                     } else {
-                        var disable_reason: String = updateTable.getString("disable_reason")
-                        if (disable_reason == "") {
-                            disable_reason = context.getString(R.string.text_update_disable_unknown)
+                        var disableReason: String = updateTable.getString("disable_reason")
+                        if (disableReason == "") {
+                            disableReason = context.getString(R.string.text_update_disable_unknown)
                         }
                         callbackPrivate.onDisabled(
-                            disable, disable_reason
+                            disable, disableReason
                         )
                     }
                 } catch (e: JSONException) {
